@@ -1,0 +1,1760 @@
+<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><meta name="description" content="Az String Lab, a single-file course for string algorithms and pattern matching"><title>Az String Lab</title>
+<style>
+:root{color-scheme:dark;--bg:#111722;--panel:#192230;--panel2:#202b3a;--panel3:#141c27;--line:#2c394b;--line2:#3b4b61;--text:#e8eef7;--muted:#a7b4c7;--subtle:#8190a5;--accent:#8ab4f8;--strong:#c9ddff;--good:#9ed7bd;--warn:#edc477;--bad:#ff929e;--shadow:none;--radius:13px}
+:root[data-theme=light]{color-scheme:light;--bg:#f4f6f8;--panel:#fff;--panel2:#f7f9fb;--panel3:#f0f4f8;--line:#dce2e9;--line2:#cbd4df;--text:#17212d;--muted:#596a7e;--subtle:#718197;--accent:#315fa2;--strong:#244a82;--good:#176b4c;--warn:#8c5c04;--bad:#b33143;--shadow:0 8px 24px rgba(20,35,50,.05)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button,a,select{touch-action:manipulation}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}a{color:var(--accent);text-decoration:none}.muted{color:var(--muted)}.mono,code,pre,textarea{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.topbar{height:64px;position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:18px;padding:0 22px;background:var(--bg);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;color:var(--text)}.brand-mark{width:34px;height:34px;border:1px solid var(--line2);border-radius:10px;background:var(--panel2);display:grid;place-items:center;color:var(--strong);font-weight:850;font-size:15px}.brand strong{display:block;font-size:14px;line-height:1.2}.brand small{display:block;font-size:10px;letter-spacing:.14em;color:var(--muted);margin-top:2px}
+.top-meta{flex:1;color:var(--subtle);font-size:12px;letter-spacing:.02em}
+.top-actions{display:flex;align-items:center;gap:7px}.top-actions label{font-size:11px;color:var(--muted)}
+select,.btn{border:1px solid var(--line2);background:var(--panel3);color:var(--text);border-radius:8px;padding:8px 11px;font-size:12px}.btn{font-weight:600;white-space:nowrap}.btn:hover{border-color:var(--accent);color:var(--strong)}.btn.primary{background:var(--accent);color:#10203a;border-color:var(--accent)}:root[data-theme=light] .btn.primary{color:white}
+.layout{display:grid;grid-template-columns:264px minmax(420px,1fr);max-width:1500px;margin:auto;min-height:calc(100vh - 64px)}
+.sidebar{position:sticky;top:64px;height:calc(100vh - 64px);overflow:auto;border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column}
+.side-title{display:flex;justify-content:space-between;color:var(--subtle);font-size:10px;letter-spacing:.14em;font-weight:800;padding:0 4px 12px}
+.pill,.tag{border:1px solid var(--line2);border-radius:6px;padding:3px 7px;font-size:10px;color:var(--muted);white-space:nowrap}
+.search{display:flex;gap:7px;align-items:center;border:1px solid var(--line);border-radius:9px;background:var(--panel3);height:39px;padding:0 10px;margin-bottom:10px}
+.search input{min-width:0;width:100%;background:transparent;border:0;outline:0;color:var(--text);font-size:12px}
+.search kbd{border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--subtle);font-size:10px}
+.filter{display:block;color:var(--subtle);font-size:11px;margin-bottom:12px}.filter select{display:block;width:100%;max-width:none;margin-top:5px;padding:7px}
+.tree{display:flex;flex-direction:column;gap:12px}
+.group-label{display:flex;justify-content:space-between;color:var(--subtle);font-size:10px;font-weight:800;letter-spacing:.08em;padding:4px 5px}
+.link{width:100%;text-align:left;display:flex;gap:8px;align-items:center;background:transparent;border:1px solid transparent;color:var(--muted);padding:7px 8px;border-radius:8px;min-height:34px}
+.link .num{font:10px ui-monospace,monospace;color:var(--subtle);width:19px;flex:none}
+.link .name{font-size:12px;flex:1}.link .done{color:var(--good)}
+.link:hover{background:var(--panel2);color:var(--text)}
+.link.active{background:var(--panel2);border-color:var(--line2);color:var(--strong)}
+.side-foot{margin-top:auto;border-top:1px solid var(--line);padding-top:14px}
+.progress-row{display:flex;justify-content:space-between;color:var(--subtle);font-size:11px;margin-bottom:7px}
+.progress{height:5px;background:var(--panel2);border-radius:9px;overflow:hidden}.progress>div{height:100%;width:0;background:var(--accent);transition:width .25s}
+.side-actions{display:flex;gap:6px;margin-top:12px}.side-actions .btn{flex:1;padding:7px;font-size:11px}
+main{max-width:920px;width:100%;min-width:0;margin:auto;padding:28px 30px 40px}
+.breadcrumb{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--subtle);margin-bottom:16px}
+.header{padding:2px 2px 22px;border-bottom:1px solid var(--line);margin-bottom:20px}
+.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.13em;font-weight:800;color:var(--accent);margin-bottom:9px}
+.header h1{font-size:clamp(27px,3vw,36px);line-height:1.12;letter-spacing:-.035em;margin:0 0 10px;font-weight:700}
+.header p{font-size:14.5px;color:var(--muted);margin:0 0 14px;max-width:740px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag.good{color:var(--good)}.tag.warn{color:var(--warn)}
+.header-actions{display:flex;gap:7px;margin-top:16px;flex-wrap:wrap}
+.panel{border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow)}
+.panel-head{padding:18px 20px 0}.panel-head h2{font-size:15px;margin:0 0 4px;letter-spacing:-.01em;font-weight:650}.panel-head p{font-size:12.5px;color:var(--muted);margin:0}
+.body{padding:16px 20px 20px}
+.idea{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:20px}
+.idea p{font-size:13.5px;color:var(--muted);margin:0 0 13px}
+.mental{background:var(--panel3);border:1px solid var(--line);border-radius:10px;padding:13px}
+.mental small{color:var(--subtle);font-size:10px;letter-spacing:.11em;text-transform:uppercase}
+.mental strong{display:block;margin:6px 0;font-size:13px;color:var(--strong)}
+.mental p{font-size:12px;color:var(--muted);margin:0}
+.takeaway{padding:11px 13px;border:1px solid var(--line2);background:var(--panel3);border-radius:8px;color:var(--strong);font-size:12.5px;line-height:1.6}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mini{background:var(--panel3);border:1px solid var(--line);border-radius:10px;padding:13px}
+.mini h3{font-size:12px;margin:0 0 7px;font-weight:650}
+.mini p{font-size:12.5px;color:var(--muted);margin:0;line-height:1.6}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}
+.steps li{counter-increment:s;display:flex;gap:10px;color:var(--muted);font-size:12.5px;line-height:1.55}
+.steps li:before{content:counter(s);width:23px;height:23px;flex:none;display:grid;place-items:center;border:1px solid var(--line2);background:var(--panel3);border-radius:6px;color:var(--accent);font:11px ui-monospace,monospace}
+.pseudo{white-space:pre-wrap;overflow:auto;background:var(--panel3);border:1px solid var(--line);border-radius:10px;padding:14px;font:12px/1.75 ui-monospace,monospace;color:var(--strong);margin:0}
+.table-wrap{overflow:auto}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{border-bottom:1px solid var(--line);text-align:left;padding:9px 10px;vertical-align:top}
+th{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--subtle);font-weight:700}
+td{color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tile{padding:12px;background:var(--panel3);border:1px solid var(--line);border-radius:9px}
+.tile span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--subtle)}
+.tile strong{display:block;color:var(--strong);font:700 14px ui-monospace,monospace;margin-top:6px}
+.tile small{font-size:10.5px;color:var(--muted);display:block;margin-top:2px}
+.notice{padding:12px 13px;background:var(--panel3);border:1px solid color-mix(in srgb,var(--warn) 35%,var(--line));border-radius:9px;font-size:12.5px;color:var(--muted);line-height:1.65}
+.notice strong{color:var(--warn)}
+.notice.info{border-color:var(--line2)}.notice.info strong{color:var(--accent)}
+.lab-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lab-top label{font-size:11.5px;color:var(--muted)}
+.lab-input{width:100%;min-height:100px;resize:vertical;background:var(--panel3);border:1px solid var(--line2);border-radius:9px;padding:11px;color:var(--text);font:12px/1.65 ui-monospace,monospace;margin:11px 0}
+.lab-output{padding:13px;background:var(--panel3);border:1px solid var(--line);border-radius:9px;min-height:70px;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--strong);font:12px/1.75 ui-monospace,monospace;overflow-x:auto}
+.lab-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.label{font-size:10px;color:var(--subtle);font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px}
+.code-head{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:11px 13px;background:var(--panel3);border-bottom:1px solid var(--line)}
+.code-editor{display:block;width:100%;min-height:220px;resize:vertical;border:0;border-radius:0;background:var(--panel3);color:var(--text);padding:15px;font:12px/1.7 ui-monospace,monospace;outline:0}
+.code-foot{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:9px 13px;color:var(--subtle);font-size:10px;border-top:1px solid var(--line)}
+.practice{border:1px solid var(--line);background:var(--panel3);border-radius:9px;padding:13px}
+.practice summary{cursor:pointer;font-size:12.5px;font-weight:600}
+.practice p{font-size:12.5px;color:var(--muted);margin:10px 0 0;line-height:1.65}
+.references{display:flex;flex-direction:column;gap:8px}
+.references a{font-size:12.5px;overflow-wrap:anywhere}
+.home-hero{padding:30px;background:linear-gradient(150deg,var(--panel),var(--panel3));border:1px solid var(--line);border-radius:14px;margin-bottom:16px}
+.home-hero h1{font-size:clamp(30px,3.6vw,42px);line-height:1.1;letter-spacing:-.04em;margin:8px 0 14px;font-weight:700}
+.home-hero p{color:var(--muted);font-size:14px;max-width:720px;margin:0 0 18px;line-height:1.65}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.stat strong{display:block;font:700 22px ui-monospace,monospace;color:var(--strong)}
+.stat span{display:block;font-size:10.5px;color:var(--muted);margin-top:3px}
+.chapter-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chapter-card{padding:14px;text-align:left;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text)}
+.chapter-card:hover{border-color:var(--accent)}
+.chapter-card .num{font-size:10px;color:var(--accent);letter-spacing:.09em;font-weight:800}
+.chapter-card strong{display:block;font-size:13px;margin:5px 0;font-weight:650}
+.chapter-card p{font-size:11.5px;color:var(--muted);margin:0;line-height:1.55}
+.toast{position:fixed;z-index:99;bottom:20px;left:50%;transform:translate(-50%,10px);opacity:0;pointer-events:none;background:var(--panel);border:1px solid var(--line2);border-radius:9px;padding:11px 15px;box-shadow:var(--shadow);font-size:12px;transition:opacity .14s,transform .14s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.footer{font-size:10.5px;color:var(--subtle);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:6px 2px 14px;align-items:center}
+.match-hl{background:var(--good);color:#10203a;font-weight:700;padding:1px 3px;border-radius:3px}
+.match-src{background:var(--accent);color:#10203a;font-weight:700;padding:1px 3px;border-radius:3px}
+.trace{font-family:ui-monospace,monospace;font-size:12px;line-height:1.8;color:var(--strong)}
+@media(max-width:1080px){.layout{grid-template-columns:240px minmax(360px,1fr)}main{padding:24px 22px 36px}}
+@media(max-width:840px){.topbar{height:auto;min-height:60px;flex-wrap:wrap;gap:10px;padding:10px 14px}.top-meta{display:none}.top-actions{margin-left:auto}.top-actions label{display:none}.layout{display:block}.sidebar{position:static;height:auto;max-height:none;border:0;border-bottom:1px solid var(--line);padding:14px}.tree{max-height:260px;overflow:auto}.side-foot{display:none}main{padding:20px 15px 32px}.idea{grid-template-columns:1fr}.mental{order:-1}.stats{grid-template-columns:1fr 1fr}.chapter-cards,.two,.lab-cols{grid-template-columns:1fr}}
+@media(max-width:520px){.brand small{display:none}.brand-mark{width:30px;height:30px}.brand strong{font-size:12px}.top-actions select{max-width:92px;padding:6px;font-size:10px}.top-actions .btn{padding:6px 8px;font-size:10px}.chapter-cards{grid-template-columns:1fr}.tiles{grid-template-columns:1fr}.home-hero{padding:20px}.home-hero h1{font-size:30px}.header h1{font-size:27px}.body,.panel-head{padding-left:15px;padding-right:15px}.footer{display:block}.footer span{display:block;margin-bottom:6px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+@media print{.topbar,.sidebar,.header-actions,.lab-top,.btn,.toast{display:none!important}.layout{display:block}main{padding:0;max-width:none}.panel,.home-hero{break-inside:avoid;box-shadow:none}body{background:#fff;color:#111}}
+</style></head><body>
+
+<header class="topbar">
+  <a class="brand" href="#home" id="homeLink"><span class="brand-mark">Az</span><span><strong>Az String Lab</strong><small>STRING ALGORITHMS · PATTERN MATCHING</small></span></a>
+  <div class="top-meta" id="catalogCount"></div>
+  <div class="top-actions">
+    <label for="themeSelect">Theme</label>
+    <select id="themeSelect" aria-label="Theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select>
+    <button class="btn" id="printBtn">Print / PDF</button>
+    <button class="btn" id="exportBtn">Export</button>
+    <button class="btn" id="importBtn">Import</button>
+    <input type="file" id="importFile" accept="application/json,.json" hidden>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" aria-label="Course navigation">
+    <div class="side-title"><span>COURSE CATALOG</span><span class="pill" id="lessonCount">0</span></div>
+    <div class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Search string topics…" aria-label="Search lessons"><kbd>/</kbd></div>
+    <label class="filter">Chapter<select id="chapterFilter"><option value="all">All chapters</option></select></label>
+    <nav class="tree" id="courseTree" aria-label="Lessons"></nav>
+    <div class="side-foot">
+      <div class="progress-row"><span>COURSE PROGRESS</span><strong id="progressText">0 / 0</strong></div>
+      <div class="progress" id="progressBar"><div id="progressFill"></div></div>
+      <div class="side-actions"><button class="btn" data-page="home">Home</button><button class="btn" data-page="progress">Progress</button></div>
+    </div>
+  </aside>
+  <main id="mainView" tabindex="-1" aria-live="polite"></main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   Az String Lab
+   ============================================================ */
+const CHAPTERS=[
+ {id:"basics",title:"1. Text basics",desc:"Character sets, Unicode normalization, substring search, naive matching.",ids:["char-sets","unicode-normalization","naive-search"]},
+ {id:"exact",title:"2. Classic exact matching",desc:"Knuth-Morris-Pratt, Z algorithm, Rabin-Karp, Boyer-Moore, Horspool.",ids:["kmp","z-algorithm","rabin-karp","boyer-moore","horspool"]},
+ {id:"bit-parallel",title:"3. Bit-parallel and multi-pattern",desc:"Shift-Or/Bitap, Myers bit-vector, Aho-Corasick, Wu-Manber.",ids:["shift-or","myers-bv","aho-corasick","wu-manber"]},
+ {id:"prefixes",title:"4. Prefixes, periods and rotations",desc:"Prefix function, Duval Lyndon factorization, Booth least rotation, periodicity.",ids:["prefix-function","duval-lyndon","booth-rotation","periodicity"]},
+ {id:"fuzzy",title:"5. Edit distance and fuzzy matching",desc:"Levenshtein, Damerau-Levenshtein, Jaro-Winkler, Landau-Vishkin.",ids:["levenshtein","damerau","jaro-winkler","landau-vishkin"]},
+ {id:"suffix",title:"6. Suffix structures",desc:"Suffix trie, suffix tree, Ukkonen, suffix array, SA-IS, DC3, Kasai LCP.",ids:["suffix-trie","suffix-tree","ukkonen","suffix-array","sa-is","kasai-lcp"]},
+ {id:"compression",title:"7. Compression and indexing for strings",desc:"Burrows-Wheeler transform, FM-index, wavelet tree, LZ parsing.",ids:["bwt","fm-index","wavelet-tree","lz-parsing"]},
+ {id:"parsing",title:"8. Parsing and regular expressions",desc:"Thompson NFA, Glushkov, Brzozowski derivatives, shunting-yard, LL/LR/LALR, packrat.",ids:["thompson-nfa","glushkov","brzozowski","shunting-yard","ll-lr-lalr","packrat"]},
+ {id:"automata",title:"9. Automata and language processing",desc:"DFA minimization, Hopcroft algorithm, Unicode segmentation, tokenization, lexer generators.",ids:["dfa-min","hopcroft","unicode-segmentation","tokenization"]},
+ {id:"bio",title:"10. Bioinformatics strings",desc:"Needleman-Wunsch, Smith-Waterman, BLAST, minimap2, BWA, MAFFT, de Bruijn assembly.",ids:["needleman-wunsch","smith-waterman","blast","minimap2-bwa","mafft","debruijn"]}
+];
+
+const D={
+ kind:"Concept",status:"Concept lesson",level:2,demo:"none",demoTitle:"Interactive teaching lab",refs:[],codeKey:"generic",
+ input:"One or more strings plus the parameters this algorithm requires.",
+ output:"A match position, an alignment, an index, or a parsed structure.",
+ invariant:"The algorithm's correctness depends on the mathematical property it exploits. Violating that property produces wrong results without an error.",
+ complexity:["Depends on text and pattern length","Depends on the algorithm","Measure on representative data"],
+ uses:"Use this as one layer inside a larger text-processing pipeline.",
+ strength:"Fits the problem it was designed for when the assumptions hold.",
+ limits:"Depends on alphabet, text size and query type.",
+ pitfall:"A method that works on ASCII can fail on Unicode. Always normalize and check the character encoding first.",
+ question:"What is the main idea of this lesson?",
+ trace:null
+};
+function mk(o){
+ const steps=o.steps||["Read the text and pattern.","Apply the algorithm.","Produce the result.","Check the output."];
+ return Object.assign({},D,{
+  summary:o.summary||"",
+  mental:o.mental||o.title,
+  mentalText:o.mentalText||o.summary||"",
+  problem:o.problem||("How does "+o.title+" work and when is it the right choice?"),
+  steps:steps,
+  trace:o.trace||steps.map((s,i)=>["Step "+(i+1),s,i===steps.length-1?"Verified":"Step done"]),
+  answer:o.answer||o.summary||"",
+  pseudo:o.pseudo||"",
+  sample:o.sample||"",
+  level:o.level||2
+ },o);
+}
+
+const RAW=[
+/* Chapter 1 */
+{id:"char-sets",title:"Character sets and encodings",level:1,kind:"Foundation",status:"Concept lesson",
+ summary:"Text is a sequence of code points mapped to bytes by an encoding. ASCII, Latin-1, UTF-8, UTF-16 and UTF-32 are the common encodings. Choosing the right one affects string algorithms on every level.",
+ mental:"The same letters written in different alphabets",
+ mentalText:"A code point is a number that identifies a character. An encoding says how to store that number as bytes. UTF-8 is variable length, UTF-16 is 16-bit units, UTF-32 is fixed 32-bit.",
+ steps:["Identify the encoding of the input bytes.","Decode to code points.","Apply the string algorithm on code points or graphemes.","Encode the output back to bytes."],
+ pseudo:"Common encodings:\n  ASCII:    7 bits per character, 128 code points\n  Latin-1:  8 bits per character, 256 code points\n  UTF-8:    1 to 4 bytes per code point, ASCII compatible\n  UTF-16:   2 bytes per unit, surrogate pairs for U+10000 and up\n  UTF-32:   4 bytes per code point, fixed width\n\nKey point:\n  In UTF-8, one character may take multiple bytes.\n  Byte indexing != character indexing.\n  Always decode first when working with strings.",
+ uses:"Text processing, JSON, HTML, every file that has characters.",
+ strength:"UTF-8 is the dominant encoding on the web and in files. It is ASCII compatible.",
+ limits:"Fixed-width indexing is impossible in UTF-8. Algorithms that assume one byte per character must be rewritten.",
+ pitfall:"Slicing UTF-8 bytes at an arbitrary position splits a character. Decode to code points first.",
+ question:"How many bytes does the character U+00E9 (é) take in UTF-8?",
+ answer:"Two bytes: 0xC3 0xA9. U+00E9 is in the Latin-1 supplement range and needs two bytes in UTF-8.",
+ demo:"none",sample:"",refs:[
+  ["Unicode Standard, latest version","https://www.unicode.org/versions/latest/"],
+  ["RFC 3629: UTF-8, a transformation format of ISO 10646","https://www.rfc-editor.org/rfc/rfc3629.html"],
+  ["Wikipedia, Character encoding","https://en.wikipedia.org/wiki/Character_encoding"]]},
+{id:"unicode-normalization",title:"Unicode normalization",level:2,kind:"Foundation",status:"Runnable teaching lab",
+ summary:"Normalization rewrites text to a canonical form so that equivalent sequences compare as equal. NFC, NFD, NFKC and NFKD are the four forms.",
+ mental:"The same letter spelled two ways",
+ mentalText:"'é' can be one code point or 'e' plus an accent. Normalization makes the choice consistent so string comparisons work.",
+ steps:["Choose a normalization form.","NFC: canonical composition, e.g. é as one code point.","NFD: canonical decomposition, e.g. e + combining acute.","NFKC and NFKD: also apply compatibility mappings.","Apply normalization before comparing or hashing."],
+ pseudo:"NFC  = canonical composition\nNFD  = canonical decomposition\nNFKC = compatibility composition\nNFKD = compatibility decomposition\n\nExample (e-acute):\n  NFC:  U+00E9           (1 code point)\n  NFD:  U+0065 U+0301    (2 code points)\n\nBoth render identically. Byte comparison fails\nunless you normalize first.\n\nCompatibility also merges:\n  ﬁ  -> fi\n  ①  -> 1",
+ uses:"Search, comparison, identifiers, password normalization, URL handling.",
+ strength:"Makes text comparison correct across input methods.",
+ limits:"Does not handle case folding or locale rules. Not all sequences are normalized identically.",
+ pitfall:"Never normalize passwords unless you document it. Normalizing changes the accepted input set.",
+ question:"Which normalization form should you use for storage and comparison?",
+ answer:"NFC is the standard recommendation. It composes most canonical sequences so bytes are shorter and comparison is stable.",
+ demo:"unicode-normalize",sample:"café vs cafe\u0301\nﬁle vs file\n① vs 1",refs:[
+  ["Unicode Standard Annex #15: Normalization Forms","https://www.unicode.org/reports/tr15/"],
+  ["Unicode Standard, Chapter 3","https://www.unicode.org/versions/latest/ch03.pdf"],
+  ["Wikipedia, Unicode equivalence","https://en.wikipedia.org/wiki/Unicode_equivalence"]]},
+{id:"naive-search",title:"Naive substring search",level:1,kind:"Search",status:"Runnable teaching lab",
+ summary:"Naive substring search tries to match the pattern at every position in the text. It runs in O(n m) time in the worst case, but it is simple and often fast enough.",
+ mental:"Sliding a window and checking every position",
+ mentalText:"Put the pattern at position 0. Compare character by character. Move one position right. Repeat until the pattern matches or you run out of text.",
+ steps:["For each start position i in 0..n-m:","Compare text[i..i+m-1] with the pattern.","If all characters match, report a match at i.","Otherwise move to i+1."],
+ pseudo:"naive_search(text, pattern):\n  n = len(text)\n  m = len(pattern)\n  matches = []\n  for i in range(n - m + 1):\n    j = 0\n    while j < m and text[i + j] == pattern[j]:\n      j += 1\n    if j == m:\n      matches.append(i)\n  return matches\n\nTime: O(n * m) worst case, O(n) typical\nSpace: O(1)",
+ uses:"Baseline for comparison, small texts, short patterns.",
+ strength:"Simple. No preprocessing.",
+ limits:"Quadratic on repetitive text. Inefficient when the pattern almost matches everywhere.",
+ pitfall:"Forgetting the n - m + 1 bound causes out-of-range access. Use range(n - m + 1) not range(n).",
+ question:"When is naive search especially slow?",
+ answer:"On repetitive text like aaaa...a with pattern aaab. Every position almost matches and the search restarts from scratch.",
+ demo:"naive",sample:"ABABDABACDABABCABAB\nABABCABAB",refs:[
+  ["Knuth, TAOCP Vol. 3, Section 5.1","https://www-cs-faculty.stanford.edu/~knuth/taocp.html"],
+  ["CLRS, Introduction to Algorithms, Chapter 32","https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/"],
+  ["Wikipedia, String-searching algorithm","https://en.wikipedia.org/wiki/String-searching_algorithm"]]},
+/* Chapter 2 */
+{id:"kmp",title:"Knuth-Morris-Pratt (KMP)",level:3,kind:"Exact search",status:"Runnable teaching lab",
+ summary:"KMP matches a pattern in O(n + m) time by precomputing a failure function that tells the algorithm how far to shift when a mismatch occurs, avoiding re-examination of text.",
+ mental:"Never re-scan the text; use what you already know",
+ mentalText:"When a mismatch happens after a partial match, KMP uses the longest proper prefix of the pattern that is also a suffix of the matched portion to shift forward.",
+ steps:["Compute the prefix function pi where pi[i] is the length of the longest proper prefix of pattern[0..i] that is also a suffix.","Walk the text and pattern.","On mismatch, set j = pi[j-1] (do not advance i).","On full match, report and continue at pi[j-1]."],
+ pseudo:"build_pi(pattern):\n  pi = [0] * len(pattern)\n  k = 0\n  for i in range(1, len(pattern)):\n    while k > 0 and pattern[i] != pattern[k]:\n      k = pi[k - 1]\n    if pattern[i] == pattern[k]: k += 1\n    pi[i] = k\n  return pi\n\nkmp_search(text, pattern):\n  pi = build_pi(pattern)\n  j = 0\n  for i in range(len(text)):\n    while j > 0 and text[i] != pattern[j]:\n      j = pi[j - 1]\n    if text[i] == pattern[j]: j += 1\n    if j == len(pattern):\n      report match at i - j + 1\n      j = pi[j - 1]\n\nTime: O(n + m)\nSpace: O(m)",
+ uses:"Text editors, grep implementations, streaming log scanning, network intrusion detection.",
+ strength:"Linear time, no re-scanning of text. Streaming friendly.",
+ limits:"O(m) extra space for the prefix function. Slower than Boyer-Moore on natural language.",
+ pitfall:"The prefix function pi[i] is the longest proper prefix that is also a suffix. Not the longest suffix.",
+ question:"What does the prefix function tell you at each position?",
+ answer:"The length of the longest proper prefix of the pattern ending at that position that is also a suffix of the same substring.",
+ demo:"kmp",sample:"ABABDABACDABABCABAB\nABABCABAB",refs:[
+  ["Knuth, Morris, Pratt, Fast pattern matching in strings, SIAM J. Comput. 1977","https://doi.org/10.1137/0206024"],
+  ["CLRS, Section 32.4 The Knuth-Morris-Pratt algorithm","https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/"],
+  ["Wikipedia, Knuth-Morris-Pratt algorithm","https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm"]]},
+{id:"z-algorithm",title:"Z algorithm",level:3,kind:"Exact search",status:"Runnable teaching lab",
+ summary:"The Z algorithm computes the Z-array where Z[i] is the length of the longest substring starting at i that matches a prefix of the string. It gives linear time pattern matching.",
+ mental:"How much does each suffix share with the prefix",
+ mentalText:"For each position i, Z[i] tells you how many characters starting at i match the beginning of the string. Uses that to find pattern occurrences.",
+ steps:["Concatenate pattern + '$' + text with a separator that does not appear in either.","Compute the Z-array in O(n + m).","Every position where Z[i] equals the pattern length is a match."],
+ pseudo:"z_array(s):\n  n = len(s)\n  Z = [0] * n\n  Z[0] = n\n  l, r = 0, 0\n  for i in range(1, n):\n    if i < r:\n      Z[i] = min(r - i, Z[i - l])\n    while i + Z[i] < n and s[Z[i]] == s[i + Z[i]]:\n      Z[i] += 1\n    if i + Z[i] > r:\n      l, r = i, i + Z[i]\n  return Z\n\nSearch:\n  s = pattern + '$' + text\n  Z = z_array(s)\n  for i in range(m + 1, len(s)):\n    if Z[i] == m: report match at i - m - 1\n\nTime: O(n + m)\nSpace: O(n + m)",
+ uses:"Pattern matching, string comparison, finding the longest prefix match, competitive programming.",
+ strength:"Conceptually simpler than KMP. Useful for many substring problems.",
+ limits:"Uses extra space for the concatenated string.",
+ pitfall:"The separator character must not appear in either the pattern or the text. Otherwise the Z-array is wrong.",
+ question:"What does Z[0] equal by convention?",
+ answer:"Z[0] is set to n, the length of the string, because the whole string trivially matches itself.",
+ demo:"z-array",sample:"ABABDABACDABABCABAB\nABABCABAB",refs:[
+  ["Gusfield, Algorithms on Strings, Trees, and Sequences, Cambridge 1997","https://www.cambridge.org/core/books/algorithms-on-strings-trees-and-sequences/"],
+  ["cp-algorithms.com, Z-function","https://cp-algorithms.com/string/z-function.html"],
+  ["Wikipedia, Z-function","https://cp-algorithms.com/string/z-function.html"]]},
+{id:"rabin-karp",title:"Rabin-Karp rolling hash search",level:4,kind:"Exact search",status:"Runnable teaching lab",
+ summary:"Rabin-Karp hashes the pattern and every text window of the same length. If the hashes match, it verifies the match character by character. Average O(n + m).",
+ mental:"Compare fingerprints first, then verify",
+ mentalText:"If two strings are equal, their hashes are equal. Use a rolling hash so each window update is O(1). On a hash match, do a full comparison to rule out collisions.",
+ steps:["Choose a base b and a prime modulus p.","Compute the hash of the pattern.","Compute the hash of the first window of text.","Slide the window by removing the leading character and adding the trailing one.","On hash match, verify the actual characters."],
+ pseudo:"hash(s[0..m-1]) = s[0]*b^(m-1) + ... + s[m-1]\n\nSlide from i to i+1:\n  new_hash = (old_hash - s[i] * b^(m-1)) * b + s[i + m]\n  new_hash %= p\n\nMatching:\n  for i in range(n - m + 1):\n    if window_hash == pattern_hash:\n      if text[i..i+m-1] == pattern: report match\n\nAverage time: O(n + m)\nWorst case: O(n * m) with many hash collisions",
+ uses:"Plagiarism detection, multi-pattern search, substring equality queries, DNA matching, LZ compression.",
+ strength:"Rolling hash makes sliding window O(1). Natural for multiple pattern search.",
+ limits:"Hash collisions need verification. Worst case degrades.",
+ pitfall:"A weak modulus or base gives too many collisions. Use a large prime, e.g. 2^61 - 1, and a random base.",
+ question:"Why does Rabin-Karp verify matches character by character?",
+ answer:"Because two different strings can have the same hash. Verification rules out false positives from hash collisions.",
+ demo:"rabin-karp",sample:"ABABDABACDABABCABAB\nABABCABAB",refs:[
+  ["Karp and Rabin, Efficient randomized pattern-matching algorithms, IBM J. Res. Dev. 1987","https://doi.org/10.1147/rd.312.0249"],
+  ["CLRS, Section 32.2 The Rabin-Karp algorithm","https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/"],
+  ["Wikipedia, Rabin-Karp algorithm","https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm"]]},
+{id:"boyer-moore",title:"Boyer-Moore",level:4,kind:"Exact search",status:"Runnable teaching lab",
+ summary:"Boyer-Moore compares the pattern from right to left and uses two heuristics, bad character and good suffix, to skip large parts of the text. Sublinear on typical inputs.",
+ mental:"Look at the end of the pattern first; you can often skip whole chunks",
+ mentalText:"If the last character does not match, you often know you can shift by the full pattern length. Two precomputed tables give the safe shift.",
+ steps:["Precompute the bad character table: for each character, the rightmost position in the pattern.","Precompute the good suffix table: for each suffix of the pattern, the smallest shift that aligns another occurrence.","Scan from right to left.","On mismatch, shift by the larger of the two tables."],
+ pseudo:"bad_char[c] = rightmost index of c in pattern, or -1\n\ngood_suffix[j] = smallest shift s.t. the suffix\nstarting at j of pattern reoccurs\n(or the longest prefix that is a suffix)\n\nsearch:\n  i = 0\n  while i <= n - m:\n    j = m - 1\n    while j >= 0 and text[i + j] == pattern[j]:\n      j -= 1\n    if j < 0: report match; i += good_suffix[0]\n    else: i += max(bad_char[text[i+j]] - (m - 1 - j), good_suffix[j])\n\nTypical: O(n / m) shifts\nWorst case: O(n * m) but rarely reached",
+ uses:"grep, text editors, biological sequence search, information retrieval.",
+ strength:"Sublinear on natural text. Very fast in practice.",
+ limits:"Preprocessing is more complex than KMP. Worst case still O(n m).",
+ pitfall:"Both tables are needed for the sublinear performance. Using only bad-character gives O(n m) in the worst case.",
+ question:"Why is Boyer-Moore often sublinear?",
+ answer:"When a mismatch occurs at the last character, the bad-character shift is often the full pattern length, skipping m positions in one step.",
+ demo:"boyer-moore",sample:"ABABDABACDABABCABAB\nABABCABAB",refs:[
+  ["Boyer and Moore, A fast string searching algorithm, CACM 1977","https://doi.org/10.1145/359842.359859"],
+  ["Gusfield, Algorithms on Strings, Trees, and Sequences, Chapter 2","https://www.cambridge.org/core/books/algorithms-on-strings-trees-and-sequences/"],
+  ["Wikipedia, Boyer-Moore string-search algorithm","https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string-search_algorithm"]]},
+{id:"horspool",title:"Horspool's algorithm",level:3,kind:"Exact search",status:"Runnable teaching lab",
+ summary:"Horspool's algorithm simplifies Boyer-Moore by using only the bad-character rule based on the last character of the window. It is simpler and almost as fast in practice.",
+ mental:"Boyer-Moore with one simple table",
+ mentalText:"Look at the last character of the current window. If it does not match, shift by a precomputed amount based on where that character appears in the pattern.",
+ steps:["Precompute shift[c] = distance from c to the end of the pattern, default m.","Compare the pattern with the window from right to left.","If the window matches, report.","Otherwise shift by shift[text[i + m - 1]]."],
+ pseudo:"shift = {}\nfor c in alphabet: shift[c] = m\nfor i in range(m - 1):\n  shift[pattern[i]] = m - 1 - i\n\nsearch:\n  i = 0\n  while i <= n - m:\n    j = m - 1\n    while j >= 0 and text[i + j] == pattern[j]:\n      j -= 1\n    if j < 0: report match at i\n    i += shift[text[i + m - 1]]\n\nAverage: O(n)\nSpace: O(alphabet size)",
+ uses:"Practical text search, grep-like tools, embedded systems where memory is tight.",
+ strength:"One table instead of two. Simple and fast.",
+ limits:"Slower than full Boyer-Moore on adversarial text. Still O(n m) worst case.",
+ pitfall:"The shift table uses the last character of the window, not the mismatched character.",
+ question:"How does Horspool differ from Boyer-Moore?",
+ answer:"Horspool uses only the last character of the window for the bad-character shift. Boyer-Moore uses the mismatch position and the good suffix table.",
+ demo:"horspool",sample:"ABABDABACDABABCABAB\nABABCABAB",refs:[
+  ["Horspool, Practical fast searching in strings, Software 1980","https://doi.org/10.1002/spe.4380100608"],
+  ["Wikipedia, Boyer-Moore-Horspool algorithm","https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore%E2%80%93Horspool_algorithm"],
+  ["Charras and Lecroq, Handbook of Exact String Matching Algorithms","https://www-igm.univ-mlv.fr/~lecroq/string/"]]},
+/* Chapter 3 */
+{id:"shift-or",title:"Shift-Or and Bitap",level:4,kind:"Bit-parallel search",status:"Runnable teaching lab",
+ summary:"Shift-Or and Bitap pack the pattern into a machine word and simulate a DFA with bitwise operations. Matching is O(n) with a very small constant, and the same code handles fuzzy matching.",
+ mental:"Do DFA work with bitwise parallelism",
+ mentalText:"Each bit of the state word corresponds to a pattern position. Update the state with a shift and an OR or AND. If the top bit is set, the pattern matches.",
+ steps:["Precompute a bitmask per character: bit i is 1 if pattern[i] != c.","Start with state = all 1s.","For each text character: state = (state << 1) | mask[c].","A zero in the top bit means the pattern ended at the current position."],
+ pseudo:"Shift-Or for pattern p of length m <= word size:\n  mask[c] = bitmask with bit i = 0 if p[i] == c else 1\n\n  state = ~0\n  for i, ch in enumerate(text):\n    state = ((state << 1) | mask[ch]) & ((1 << m) - 1)\n    if (state >> (m - 1)) & 1 == 0:\n      report match at i - m + 1\n\nBitap for fuzzy (k mismatches):\n  add extra bits for the error levels\n  O(n * m) bit operations\n\nTime: O(n * m / word_size) for fuzzy\nSpace: O(alphabet * m / word_size)",
+ uses:"grep implementations (agrep), approximate matching, regular expression engines, embedded search.",
+ strength:"Extremely fast constant. Handles approximate matching naturally.",
+ limits:"Pattern length limited to the word size, or needs multi-word simulation.",
+ pitfall:"The bitmask setup is easy to get wrong. Bit i corresponds to pattern position i, with 0 meaning match.",
+ question:"Why is Bitap good for fuzzy matching?",
+ answer:"The error levels are stored in additional bit fields of the same word, so k mismatches are handled with a few extra bitwise operations per character.",
+ demo:"shift-or",sample:"ABABDABACDABABCABAB\nABABCABAB",refs:[
+  ["Baeza-Yates and Gonnet, A new approach to text searching, CACM 1992","https://doi.org/10.1145/146585.146602"],
+  ["Wu and Manber, Fast text searching allowing errors, CACM 1992","https://doi.org/10.1145/135239.135242"],
+  ["Wikipedia, Bitap algorithm","https://en.wikipedia.org/wiki/Bitap_algorithm"]]},
+{id:"myers-bv",title:"Myers bit-vector algorithm",level:5,kind:"Bit-parallel",status:"Concept lesson",
+ summary:"Myers' algorithm computes edit distance in O(n m / w) time using bit-parallel operations. It is the basis of modern diff and fuzzy matching tools.",
+ mental:"Edit distance with bitwise parallelism",
+ mentalText:"Instead of filling a DP table cell by cell, the algorithm processes the whole table one column at a time using bit operations. Word size w gives a speedup of w times.",
+ steps:["Precompute a bitmask for each character.","Maintain the horizontal and vertical difference vectors of the DP table.","For each text character, update the difference vectors with shifts and bitwise operations.","The distance is recovered from the number of 1 bits in the final state."],
+ pseudo:"myers(text, pattern):\n  m = len(pattern)\n  # bitmask for each character\n  for each char c: Peq[c] = bitmask of positions in pattern that equal c\n\n  # initialize\n  VP = (1 << m) - 1\n  VN = 0\n  score = m\n\n  for each char c in text:\n    X = Peq[c] | VN\n    D0 = ((VP + (X & VP)) ^ VP) | X\n    HP = VN | ~(D0 | VP)\n    HN = D0 & VP\n\n    X = HP << 1\n    if HP & (1 << (m - 1)): score += 1\n    VP = (HN << 1) | ~(D0 | X)\n    VN = X & D0\n    if HN & (1 << (m - 1)): score -= 1\n\n    if score <= k: report approximate match\n\nTime: O(n * m / w) where w is the word size (usually 64)\nSpace: O(alphabet * m / w)",
+ uses:"GNU diff, fuzzy matching, spell checkers, approximate string matching, bioinformatics.",
+ strength:"Very fast edit distance. Used in diff and fuzzy matching at scale.",
+ limits:"Complex to implement. Bit-vector width limits the pattern length before multi-word simulation.",
+ pitfall:"The horizontal and vertical difference encodings are subtle. Bugs are common in the initial bit manipulations.",
+ question:"How does Myers get a speedup over the classic O(n m) DP?",
+ answer:"It processes m DP cells at once using bitwise operations on a w-bit word, giving O(n m / w) time. With w = 64 that is a 64x speedup.",
+ demo:"none",sample:"",refs:[
+  ["Myers, A fast bit-vector algorithm for approximate string matching based on dynamic programming, JACM 1999","https://doi.org/10.1145/316542.316550"],
+  ["Hyyrö, Explaining and extending the bit-parallel approximate string matching algorithm of Myers, 2001","https://www.semanticscholar.org/paper/Explaining-and-extending-the-bit-parallel-algorithm-Hyyr%C3%B6/"],
+  ["Wikipedia, Myers diff algorithm","https://en.wikipedia.org/wiki/Diff#Myers_algorithm"]]},
+{id:"aho-corasick",title:"Aho-Corasick multi-pattern matching",level:4,kind:"Multi-pattern",status:"Runnable teaching lab",
+ summary:"Aho-Corasick builds a finite automaton that matches any of a set of patterns in a single pass over the text. Preprocessing is O(sum of pattern lengths) and search is O(n + matches).",
+ mental:"One automaton that recognizes all patterns at once",
+ mentalText:"Build a trie of all patterns. Add fail links that jump to the longest proper suffix that is also a prefix of some pattern. Scan the text once, reporting all matches.",
+ steps:["Build a trie of all patterns.","BFS the trie to add fail links.","Build output links so a match reports all patterns ending at the current position.","Scan the text, following transitions and fail links."],
+ pseudo:"build_trie(patterns):\n  root = node()\n  for p in patterns:\n    cur = root\n    for ch in p: cur = cur.child[ch] or new node\n    cur.pattern = p\n\nadd_fail_links(root):\n  queue = [root.child[c] for c in root.child]\n  for each child: child.fail = root\n  while queue:\n    u = queue.pop()\n    for c, v in u.child:\n      f = u.fail\n      while f and c not in f.child: f = f.fail\n      v.fail = f.child[c] if c in f.child and f.child[c] != v else root\n      v.outputs = v.pattern + v.fail.outputs\n      queue.append(v)\n\nsearch(text):\n  state = root\n  for i, ch in enumerate(text):\n    while state and ch not in state.child: state = state.fail\n    state = state.child.get(ch, root)\n    for p in state.outputs: report match p at i - len(p) + 1\n\nTime: O(total pattern length + n + matches)\nSpace: O(total pattern length)",
+ uses:"Antivirus scanning, network intrusion detection, spam filtering, dictionary search, keyword highlighting.",
+ strength:"Linear in text length regardless of pattern count.",
+ limits:"Memory can be large for many long patterns. Fail links require care.",
+ pitfall:"The output set of a state is the union of its pattern and all fail-chain outputs. Forgetting this misses matches.",
+ question:"What does a fail link in Aho-Corasick point to?",
+ answer:"The longest proper suffix of the current path that is also a prefix of some pattern in the trie. Used to continue matching when a character cannot be matched.",
+ demo:"aho-corasick",sample:"ushers\nhe\nshe\nhis\nhers",refs:[
+  ["Aho and Corasick, Efficient string matching: an aid to bibliographic search, CACM 1975","https://doi.org/10.1145/360825.360855"],
+  ["Wikipedia, Aho-Corasick algorithm","https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm"],
+  ["Gusfield, Algorithms on Strings, Trees, and Sequences, Chapter 3","https://www.cambridge.org/core/books/algorithms-on-strings-trees-and-sequences/"]]},
+{id:"wu-manber",title:"Wu-Manber multi-pattern",level:5,kind:"Multi-pattern",status:"Concept lesson",
+ summary:"Wu-Manber is a fast multi-pattern algorithm based on hashing blocks of characters. It is often faster than Aho-Corasick in practice on natural language, at the cost of some preprocessing memory.",
+ mental:"Skip large chunks when nothing matches",
+ mentalText:"Hash blocks of B consecutive characters from the text. If a hash matches the last B characters of some pattern, verify. Otherwise skip ahead using a shift table.",
+ steps:["Choose a block size B, usually 2 or 3.","Build a shift table: for each block of B characters, how far to shift when it does not match.","Build a hash table mapping block hashes to pattern suffixes.","Scan the text B characters at a time."],
+ pseudo:"wu_manber(patterns):\n  B = 2 or 3\n  shift = defaultdict(lambda: m - B + 1)\n  for each pattern p:\n    for i in range(len(p) - B + 1):\n      block = p[i:i+B]\n      shift[block] = min(shift[block], len(p) - B - i)\n      hash_table[hash(block)].append((p, i))\n\nsearch(text):\n  pos = m - 1\n  while pos < n:\n    block = text[pos - B + 1 : pos + 1]\n    if block in hash_table:\n      for (p, i) in hash_table[block]:\n        verify p at pos - i\n    pos += shift[block]",
+ uses:"Antivirus scanning, deep packet inspection, grep-like multi-pattern search.",
+ strength:"Skips large parts of the text. Fast on natural language.",
+ limits:"Worst case O(n m). More memory than Aho-Corasick for the hash table.",
+ pitfall:"The block size B must be at least 2. B = 1 gives a bad-character shift, which is less efficient.",
+ question:"Why is Wu-Manber usually faster than Aho-Corasick?",
+ answer:"It skips B characters at a time on average, whereas Aho-Corasick processes one character per state transition.",
+ demo:"none",sample:"",refs:[
+  ["Wu and Manber, A fast algorithm for multi-pattern searching, 1994","https://www.semanticscholar.org/paper/A-fast-algorithm-for-multi-pattern-searching-Wu-Manber/"],
+  ["Wikipedia, Commentz-Walter algorithm","https://en.wikipedia.org/wiki/Commentz-Walter_algorithm"],
+  ["Handbook of Exact String Matching Algorithms","https://www-igm.univ-mlv.fr/~lecroq/string/"]]},
+/* Chapter 4 */
+{id:"prefix-function",title:"Prefix function and borders",level:3,kind:"String property",status:"Runnable teaching lab",
+ summary:"The prefix function pi[i] is the length of the longest proper prefix of s[0..i] that is also a suffix. It is the core of KMP and many other string algorithms.",
+ mental:"How much of the front is also the back",
+ mentalText:"For each position, ask: what is the longest prefix of the whole string that is also a suffix ending here? That length is pi[i].",
+ steps:["Initialize pi[0] = 0.","Use two pointers i and k.","If s[i] == s[k], increment k, set pi[i] = k, increment i.","Else if k > 0, k = pi[k-1]. Else pi[i] = 0, increment i."],
+ pseudo:"prefix_function(s):\n  n = len(s)\n  pi = [0] * n\n  for i in range(1, n):\n    k = pi[i - 1]\n    while k > 0 and s[i] != s[k]:\n      k = pi[k - 1]\n    if s[i] == s[k]: k += 1\n    pi[i] = k\n  return pi\n\nProperties:\n  pi[i] < i + 1 (proper prefix)\n  The border lengths form a chain via pi\n  Smallest period of s[0..i] = i + 1 - pi[i]\n\nTime: O(n)\nSpace: O(n)",
+ uses:"KMP, finding all periods of a string, finding the smallest repetition, checking for a borderless string, competitive programming.",
+ strength:"Linear. Simple. Foundation for KMP.",
+ limits:"Only for prefixes of one string. Suffix structures need different tools.",
+ pitfall:"pi[i] is the longest proper prefix. If you use the longest non-proper prefix you get a trivial answer.",
+ question:"What is the smallest period of s[0..i]?",
+ answer:"The value i + 1 - pi[i]. If i+1 is divisible by that period, the whole substring is a repetition of a shorter block.",
+ demo:"prefix-function",sample:"ABABDABACDABABCABAB",refs:[
+  ["Knuth, Morris, Pratt, Fast pattern matching in strings, SIAM J. Comput. 1977","https://doi.org/10.1137/0206024"],
+  ["Gusfield, Algorithms on Strings, Trees, and Sequences, Chapter 1","https://www.cambridge.org/core/books/algorithms-on-strings-trees-and-sequences/"],
+  ["cp-algorithms.com, Prefix function","https://cp-algorithms.com/string/prefix-function.html"]]},
+{id:"duval-lyndon",title:"Duval's Lyndon factorization",level:5,kind:"String factorization",status:"Concept lesson",
+ summary:"Duval's algorithm factors a string into a nonincreasing sequence of Lyndon words. A Lyndon word is strictly smaller than all its proper suffixes. Runs in linear time.",
+ mental:"Splitting a string at natural break points",
+ mentalText:"Start at the beginning. Find the longest prefix that is a Lyndon word. Repeat on the rest. The result is unique.",
+ steps:["Start with the whole string.","Scan to find the first Lyndon word (smallest prefix by cyclic rotation).","Output it.","Continue from the next character."],
+ pseudo:"duval(s):\n  n = len(s)\n  factors = []\n  i = 0\n  while i < n:\n    j = i + 1\n    k = i\n    while j < n and s[k] <= s[j]:\n      if s[k] < s[j]: k = i\n      else: k += 1\n      j += 1\n    while i <= k:\n      factors.append(s[i : i + j - k])\n      i += j - k\n  return factors\n\nExample: 'banana' -> 'b', 'an', 'an', 'a'\nProperties:\n  factors are nonincreasing: f1 >= f2 >= ...\n  each factor is a Lyndon word\n  unique factorization\n\nTime: O(n)\nSpace: O(1) excluding output",
+ uses:"String compression, combinatorics on words, competitive programming (minimal rotations), Lyndon word problems.",
+ strength:"Linear. Simple to implement.",
+ limits:"Specialized. Mainly useful when Lyndon structure is the target.",
+ pitfall:"A Lyndon word must be strictly smaller than all its proper suffixes. The empty string is not a Lyndon word.",
+ question:"How many factors can the Lyndon factorization have?",
+ answer:"At most n, one per character. For a string with all distinct decreasing characters, every factor is a single character.",
+ demo:"none",sample:"",refs:[
+  ["Duval, Factorizing words over an ordered alphabet, J. Algorithms 1983","https://doi.org/10.1016/0196-6774(83)90017-2"],
+  ["Wikipedia, Lyndon word","https://en.wikipedia.org/wiki/Lyndon_word"],
+  ["cp-algorithms.com, Lyndon factorization","https://cp-algorithms.com/string/lyndon_factorization.html"]]},
+{id:"booth-rotation",title:"Booth's least rotation",level:4,kind:"String rotation",status:"Runnable teaching lab",
+ summary:"Booth's algorithm finds the lexicographically smallest rotation of a string in O(n) time using an extension of the KMP failure function.",
+ mental:"Find the starting point that gives the smallest rotation",
+ mentalText:"Consider all n rotations of the string. Booth's algorithm finds the one that is lexicographically smallest without listing them all.",
+ steps:["Duplicate the string: s + s.","Run a modified KMP-like scan to find the start of the smallest rotation.","Return that starting index."],
+ pseudo:"booth(s):\n  n = len(s)\n  ss = s + s\n  f = [-1] * (2 * n)\n  k = 0\n  for j in range(1, 2 * n):\n    i = f[j - k - 1]\n    while i != -1 and ss[j] != ss[k + i + 1]:\n      if ss[j] < ss[k + i + 1]: k = j - i - 1\n      i = f[i]\n    if i == -1 and ss[j] != ss[k + i + 1]:\n      if ss[j] < ss[k + i + 1]: k = j\n      f[j - k] = -1\n    else:\n      f[j - k] = i + 1\n  return k\n\nTime: O(n)\nSpace: O(n)",
+ uses:"Canonical form of a cyclic string, necklace comparison, competitive programming, string matching on circular strings.",
+ strength:"Linear time. No need to enumerate rotations.",
+ limits:"Only for lexicographic order. Different orders need different algorithms.",
+ pitfall:"The algorithm works on the doubled string. The result is the index in the original string (0 to n-1).",
+ question:"What is the least rotation of 'baba'?",
+ answer:"'abab', starting at index 1.",
+ demo:"booth",sample:"baba",refs:[
+  ["Booth, Lexicographically least circular substring, Information Processing Letters 1980","https://doi.org/10.1016/0020-0190(80)90122-2"],
+  ["Shiloach, Fast canonization of circular strings, J. Algorithms 1981","https://doi.org/10.1016/0196-6774(81)90012-6"],
+  ["Wikipedia, Lexicographically minimal string rotation","https://en.wikipedia.org/wiki/Lexicographically_minimal_string_rotation"]]},
+{id:"periodicity",title:"Periodicity and the period lemma",level:4,kind:"String property",status:"Runnable teaching lab",
+ summary:"A string has period p if s[i] = s[i+p] for all valid i. The period lemma relates periods to repetitions and is the basis of many algorithms that detect repetitions.",
+ mental:"Repeating patterns in text",
+ mentalText:"A string has period p if shifting it by p does not change it. The smallest such p is the period. The weak period lemma says: if a string has periods p and q with p + q <= n + gcd(p, q), then gcd(p, q) is also a period.",
+ steps:["A period p of s means s[i] = s[i+p] for all i where both are defined.","The smallest period is n - pi[n-1] where pi is the prefix function.","The period lemma lets you infer additional periods from known ones.","A string is a repetition of a block of length p if p divides n and p is a period."],
+ pseudo:"period(s, p):\n  for i in range(len(s) - p):\n    if s[i] != s[i + p]: return False\n  return True\n\nsmallest_period(s):\n  pi = prefix_function(s)\n  return len(s) - pi[-1]\n\nPeriod lemma (Fine and Wilf):\n  if p and q are periods of s and p + q <= n + gcd(p, q)\n  then gcd(p, q) is also a period of s\n\nRepetition: s = t^k if some t of length p repeats k times\n  Detected by checking n mod p == 0 and p is a period",
+ uses:"Repetition detection, pattern matching, compression, bioinformatics (tandem repeats).",
+ strength:"Explains why many string algorithms work.",
+ limits:"Only for periodic strings. Aperiodic strings have period n.",
+ pitfall:"A string always has period n (the whole string) but that is trivial. The interesting question is whether it has a smaller period.",
+ question:"What is the smallest period of 'ababab'?",
+ answer:"2, because 'ab' repeats three times. The whole string has period 2.",
+ demo:"periodicity",sample:"ababab",refs:[
+  ["Fine and Wilf, Uniqueness theorems for periodic functions, Proc. AMS 1965","https://doi.org/10.1090/S0002-9939-1965-0174934-9"],
+  ["Gusfield, Algorithms on Strings, Trees, and Sequences, Chapter 1","https://www.cambridge.org/core/books/algorithms-on-strings-trees-and-sequences/"],
+  ["Wikipedia, Periodicity lemma","https://en.wikipedia.org/wiki/Fine_and_Wilf_theorem"]]},
+/* Chapter 5 */
+{id:"levenshtein",title:"Levenshtein edit distance",level:3,kind:"Fuzzy matching",status:"Runnable teaching lab",
+ summary:"Levenshtein distance is the minimum number of single-character insertions, deletions and substitutions to transform one string into another. Classic O(n m) DP.",
+ mental:"The fewest edit operations to fix the text",
+ mentalText:"Align the two strings character by character. Fill a table where each cell is the minimum cost of aligning two prefixes.",
+ steps:["Build a table D of size (n+1) x (m+1).","D[i][0] = i and D[0][j] = j.","For each cell, D[i][j] = min of delete, insert, substitute.","The answer is D[n][m]."],
+ pseudo:"levenshtein(a, b):\n  n, m = len(a), len(b)\n  D = [[0] * (m + 1) for _ in range(n + 1)]\n  for i in range(n + 1): D[i][0] = i\n  for j in range(m + 1): D[0][j] = j\n  for i in range(1, n + 1):\n    for j in range(1, m + 1):\n      cost = 0 if a[i - 1] == b[j - 1] else 1\n      D[i][j] = min(\n        D[i - 1][j] + 1,     # delete\n        D[i][j - 1] + 1,     # insert\n        D[i - 1][j - 1] + cost  # substitute\n      )\n  return D[n][m]\n\nTime: O(n * m)\nSpace: O(min(n, m)) with rolling rows",
+ uses:"Spell check, autocorrect, fuzzy search, plagiarism detection, bioinformatics alignment.",
+ strength:"Simple and correct.",
+ limits:"O(n m) too slow for very long strings. Basic version does not handle transpositions.",
+ pitfall:"The base row and column must be filled. Forgetting them gives wrong answers for prefixes.",
+ question:"What is the edit distance between 'kitten' and 'sitting'?",
+ answer:"3: two substitutions (k->s, e->i) and one insertion (g at the end).",
+ demo:"levenshtein",sample:"kitten\nsitting",refs:[
+  ["Levenshtein, Binary codes capable of correcting deletions, insertions and reversals, 1966","https://www.sciencedirect.com/science/article/abs/pii/S0019995866803774"],
+  ["CLRS, problem 15-5 Edit distance","https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/"],
+  ["Wikipedia, Levenshtein distance","https://en.wikipedia.org/wiki/Levenshtein_distance"]]},
+{id:"damerau",title:"Damerau-Levenshtein distance",level:4,kind:"Fuzzy matching",status:"Runnable teaching lab",
+ summary:"Damerau-Levenshtein adds a fourth operation: transposition of two adjacent characters. This makes the distance between 'ab' and 'ba' equal to 1 instead of 2.",
+ mental:"A typo that swaps two letters counts as one error",
+ mentalText:"In addition to insert, delete and substitute, you can swap two adjacent characters at a cost of 1. This is closer to how people actually type.",
+ steps:["Same DP table as Levenshtein.","Add a fourth candidate: D[i-2][j-2] + 1 if a[i-1] == b[j-2] and a[i-2] == b[j-1].","Take the minimum of four options."],
+ pseudo:"damerau(a, b):\n  n, m = len(a), len(b)\n  D = [[0] * (m + 1) for _ in range(n + 1)]\n  for i in range(n + 1): D[i][0] = i\n  for j in range(m + 1): D[0][j] = j\n  for i in range(1, n + 1):\n    for j in range(1, m + 1):\n      cost = 0 if a[i - 1] == b[j - 1] else 1\n      D[i][j] = min(\n        D[i - 1][j] + 1,\n        D[i][j - 1] + 1,\n        D[i - 1][j - 1] + cost\n      )\n      if i > 1 and j > 1 and a[i-1] == b[j-2] and a[i-2] == b[j-1]:\n        D[i][j] = min(D[i][j], D[i - 2][j - 2] + 1)\n  return D[n][m]\n\nTime: O(n * m)\nSpace: O(min(n, m)) with two rolling rows",
+ uses:"Spell check, autocorrect, name matching, OCR correction.",
+ strength:"More accurate for typos than plain Levenshtein.",
+ limits:"Slightly more complex. Some variants (unrestricted) are O(n m) but with a larger constant.",
+ pitfall:"The transposition check must look at the characters correctly: a[i-1] equals b[j-2] and a[i-2] equals b[j-1].",
+ question:"Why is Damerau-Levenshtein better for spell check?",
+ answer:"Most typos are transpositions of adjacent letters. Counting them as one edit instead of two gives more sensible corrections.",
+ demo:"damerau",sample:"ca\nabc",refs:[
+  ["Damerau, A technique for computer detection and correction of spelling errors, CACM 1964","https://doi.org/10.1145/363958.363994"],
+  ["Wikipedia, Damerau-Levenshtein distance","https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance"],
+  ["Lowrance and Wagner, An extension of the string-to-string correction problem, JACM 1975","https://doi.org/10.1145/321879.321880"]]},
+{id:"jaro-winkler",title:"Jaro and Jaro-Winkler similarity",level:4,kind:"Fuzzy matching",status:"Runnable teaching lab",
+ summary:"Jaro similarity counts matching characters within a sliding window and the number of transpositions. Jaro-Winkler adds a bonus for a common prefix. Values range from 0 to 1.",
+ mental:"How many characters line up, with a bonus for a shared prefix",
+ mentalText:"Two strings are similar if many of their characters match within a small window and few need to be swapped. Matching the first few characters gives a bonus.",
+ steps:["Choose a match window = floor(max(|s1|, |s2|) / 2) - 1.","Count matching characters.","Count transpositions: positions where matched characters are in different order.","Jaro = (m/|s1| + m/|s2| + (m - t/2)/m) / 3.","Jaro-Winkler = Jaro + l * p * (1 - Jaro) where l is the common prefix length up to 4, p = 0.1."],
+ pseudo:"jaro(s1, s2):\n  window = max(len(s1), len(s2)) // 2 - 1\n  m1 = [False] * len(s1)\n  m2 = [False] * len(s2)\n  matches = 0\n  for i, c in enumerate(s1):\n    for j in range(max(0, i - window), min(len(s2), i + window + 1)):\n      if not m2[j] and s2[j] == c:\n        m1[i] = m2[j] = True\n        matches += 1\n        break\n  if matches == 0: return 0\n  t = 0\n  k = 0\n  for i in range(len(s1)):\n    if m1[i]:\n      while not m2[k]: k += 1\n      if s1[i] != s2[k]: t += 1\n      k += 1\n  t //= 2\n  return (matches / len(s1) + matches / len(s2) +\n          (matches - t) / matches) / 3\n\njaro_winkler(s1, s2):\n  j = jaro(s1, s2)\n  l = common_prefix_length(s1, s2, max_len=4)\n  p = 0.1\n  return j + l * p * (1 - j)",
+ uses:"Record linkage, deduplication, entity resolution, name matching.",
+ strength:"Handles transpositions and prefix similarity naturally.",
+ limits:"Not a metric. Does not satisfy the triangle inequality. Not well suited for arbitrary edits.",
+ pitfall:"The Jaro window is important. A window that is too small misses matches. Too large over-matches.",
+ question:"What is the maximum value of Jaro similarity?",
+ answer:"1 when the two strings are identical. 0 when there are no matching characters.",
+ demo:"jaro-winkler",sample:"MARTHA\nMARHTA\nDIXON\nDICKSONX",refs:[
+  ["Jaro, Advances in record-linkage methodology, JASA 1989","https://doi.org/10.1080/01621459.1989.10478769"],
+  ["Winkler, String comparator metrics and enhanced decision rules, 1990","https://www.tandfonline.com/doi/abs/10.1080/01621459.1990.10476213"],
+  ["Wikipedia, Jaro-Winkler distance","https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance"]]},
+{id:"landau-vishkin",title:"Landau-Vishkin and Ukkonen banded matching",level:5,kind:"Approximate matching",status:"Concept lesson",
+ summary:"Landau-Vishkin and Ukkonen solve approximate pattern matching in O(n k) or O(n k / w) time, where k is the maximum number of errors. They are faster than Levenshtein when k is small.",
+ mental:"Only look at the diagonal band where matches are possible",
+ mentalText:"If only k errors are allowed, only a band of width 2k+1 around the main diagonal of the DP table can contain a valid alignment. Fill only that band.",
+ steps:["Set the band width to 2k+1 around the main diagonal.","Fill only cells within the band.","Landau-Vishkin further reduces work by jumping along exact matches.","Report all positions where the pattern matches with at most k errors."],
+ pseudo:"ukkonen_banded(text, pattern, k):\n  m = len(pattern)\n  D = defaultdict(lambda: k + 1)\n  for i in range(m + 1):\n    for j in range(max(0, i - k), min(m, i + k) + 1):\n      # standard Levenshtein recurrence within the band\n      ...\n\n  report every text position where D[m][j] <= k\n\nLandau-Vishkin:\n  for each error count e:\n    compute the furthest text position reachable with e errors\n    via longest common extension (LCE)\n\nTime:\n  Ukkonen: O(n * k)\n  Landau-Vishkin: O(n * k) or O(n * k / w)\n  Levenshtein: O(n * m)",
+ uses:"DNA sequencing error correction, approximate search in grep, spell check, network intrusion detection.",
+ strength:"Linear in n when k is small. Very fast for near-exact matching.",
+ limits:"Only good when k is much smaller than m. Full Levenshtein is needed for large k.",
+ pitfall:"The band must be symmetric around the main diagonal. Off-by-one errors break the algorithm.",
+ question:"Why is the banded approach faster than full Levenshtein?",
+ answer:"Only (2k+1) diagonals are filled instead of the whole m x n table. That is O(n k) instead of O(n m).",
+ demo:"none",sample:"",refs:[
+  ["Landau and Vishkin, Fast string matching with k differences, JCSS 1988","https://doi.org/10.1016/0022-0000(88)90029-1"],
+  ["Ukkonen, Algorithms for approximate string matching, Information and Control 1985","https://doi.org/10.1016/S0019-9958(85)80046-2"],
+  ["Navarro, A guided tour to approximate string matching, ACM Computing Surveys 2001","https://doi.org/10.1145/375360.375365"]]},
+/* Chapter 6 */
+{id:"suffix-trie",title:"Suffix trie and suffix tree basics",level:4,kind:"Suffix structure",status:"Concept lesson",
+ summary:"A suffix trie is a trie of all suffixes of a string. A suffix tree compresses chains of single-child nodes, giving O(n) space while supporting substring queries in O(m).",
+ mental:"A tree of every suffix",
+ mentalText:"Every suffix of the string starts at some position. Put them all in a trie. The paths spell out every substring. Compression gives a suffix tree.",
+ steps:["Insert every suffix into a trie.","Compress chains of single-child nodes into one edge labeled with a substring.","Store the starting positions at the leaves.","Query by walking down edges and reading labels."],
+ pseudo:"Suffix trie for 'banana':\n  suffixes: banana, anana, nana, ana, na, a\n  build a trie of all of them\n\nSuffix tree (compressed):\n  every internal node has at least 2 children\n  edges are labeled with substrings\n  leaves store the suffix start position\n  space: O(n) with careful pointer representation\n\nApplications:\n  substring existence in O(m)\n  longest common substring of two strings in O(n)\n  longest repeated substring in O(n)\n  number of distinct substrings\n\nTime to build: O(n) with Ukkonen\nSpace: O(n)",
+ uses:"Genome alignment, full-text indexing, string statistics, pattern matching with multiple queries.",
+ strength:"Substring queries in O(m) after O(n) preprocessing.",
+ limits:"Complex to build and to store compactly. Suffix arrays are often used instead.",
+ pitfall:"The suffix tree includes a sentinel character at the end of the string. Without it, some suffixes are prefixes of others and the tree is not well defined.",
+ question:"How many leaves does a suffix tree for a string of length n have?",
+ answer:"n leaves if a sentinel is added, one per suffix.",
+ demo:"none",sample:"",refs:[
+  ["Weiner, Linear pattern matching algorithms, FOCS 1973","https://doi.org/10.1109/SWAT.1973.13"],
+  ["Gusfield, Algorithms on Strings, Trees, and Sequences, Chapter 5","https://www.cambridge.org/core/books/algorithms-on-strings-trees-and-sequences/"],
+  ["Wikipedia, Suffix tree","https://en.wikipedia.org/wiki/Suffix_tree"]]},
+{id:"suffix-tree",title:"Suffix tree applications",level:5,kind:"Suffix structure",status:"Concept lesson",
+ summary:"A suffix tree answers many string questions in linear time: longest common substring, longest repeated substring, number of distinct substrings, shortest unique substring, and more.",
+ mental:"One structure, many string questions answered fast",
+ mentalText:"Once you have the suffix tree, many problems become tree traversals. The longest common substring of two strings is the deepest internal node shared by both.",
+ steps:["Build the suffix tree once.","For longest repeated substring: find the deepest internal node.","For longest common substring of two strings: build the generalized suffix tree and find the deepest node with suffixes from both.","For number of distinct substrings: sum edge lengths."],
+ pseudo:"Suffix tree construction:\n  Naive: O(n^2) time and space (not practical)\n  Ukkonen: O(n) time and space (linear, online)\n  McCreight: O(n) (right-to-left)\n\nApplications:\n  Longest repeated substring:\n    deepest internal node, path label is the substring\n\n  Longest common substring of s1 and s2:\n    build generalized suffix tree\n    find deepest internal node with leaves from both s1 and s2\n\n  Number of distinct substrings:\n    sum over edges of (edge length) - n(n+1)/2 adjustments\n\n  All occurrences of a pattern:\n    walk down, report leaf positions in subtree",
+ uses:"Bioinformatics (genome alignment), text editors (repeated substring), plagiarism detection, compression.",
+ strength:"Many string problems become simple tree traversals.",
+ limits:"High constant factor in memory. Suffix arrays often preferred.",
+ pitfall:"Ukkonen's algorithm is complex to implement correctly. Most production code uses a suffix array instead.",
+ question:"How do you find the longest common substring of two strings with a suffix tree?",
+ answer:"Build a generalized suffix tree with each leaf colored by which string it came from. Find the deepest internal node that has leaves of both colors. Its path label is the longest common substring.",
+ demo:"none",sample:"",refs:[
+  ["Ukkonen, On-line construction of suffix trees, Algorithmica 1995","https://doi.org/10.1007/BF01206331"],
+  ["Gusfield, Algorithms on Strings, Trees, and Sequences, Chapter 6-9","https://www.cambridge.org/core/books/algorithms-on-strings-trees-and-sequences/"],
+  ["Wikipedia, Generalized suffix tree","https://en.wikipedia.org/wiki/Generalized_suffix_tree"]]},
+{id:"ukkonen",title:"Ukkonen's online suffix tree",level:5,kind:"Suffix structure",status:"Concept lesson",
+ summary:"Ukkonen builds a suffix tree in O(n) time and space by adding characters one at a time and using suffix links to move between phases without rescanning.",
+ mental:"Build the tree incrementally, reusing work",
+ mentalText:"Add one character to every suffix at once. Suffix links and the active point let you jump between updates without walking from the root.",
+ steps:["Process the string left to right.","Maintain an 'active point' that tracks where in the tree you are.","Add the new character to all suffixes ending at the current position.","Use suffix links to move from one suffix to the next.","Rule 1: character already present, just extend the active point.","Rule 2: split an edge or create a new leaf."],
+ pseudo:"ukkonen(s):\n  add sentinel '$' to s\n  root = new_node()\n  active_node, active_edge, active_length = root, None, 0\n  remaining = 0\n\n  for i, ch in enumerate(s):\n    remaining += 1\n    last_new_node = None\n    while remaining > 0:\n      # rule 1, 2, or 3 based on active point\n      ...\n      if last_new_node is not None:\n        set suffix link from last_new_node\n      remaining -= 1\n    # update active point\n\nTime: O(n)\nSpace: O(n)\nKey ideas:\n  suffix links: from one suffix's end to the next\n  active point: an (edge, length) position in the tree",
+ uses:"Building suffix trees in practice. Underlies many text indexing libraries.",
+ strength:"Linear time and space. Online: characters processed as they arrive.",
+ limits:"Complex implementation. Bugs are common.",
+ pitfall:"Suffix links go from an internal node to the node representing its suffix minus the first character. Missing or wrong links break the O(n) bound.",
+ question:"What is a suffix link?",
+ answer:"A pointer from an internal node to the internal node representing the longest proper suffix of the current path.",
+ demo:"none",sample:"",refs:[
+  ["Ukkonen, On-line construction of suffix trees, Algorithmica 1995","https://doi.org/10.1007/BF01206331"],
+  ["Gusfield, Algorithms on Strings, Trees, and Sequences, Chapter 6","https://www.cambridge.org/core/books/algorithms-on-strings-trees-and-sequences/"],
+  ["Wikipedia, Ukkonen's algorithm","https://en.wikipedia.org/wiki/Ukkonen%27s_algorithm"]]},
+{id:"suffix-array",title:"Suffix array",level:4,kind:"Suffix structure",status:"Runnable teaching lab",
+ summary:"A suffix array is the sorted list of suffix starting positions. It uses O(n) integers instead of the O(n) pointers of a suffix tree, so it is more cache friendly and often preferred.",
+ mental:"All suffixes, sorted, positions listed",
+ mentalText:"Take every suffix of the string. Sort them. Store the starting index of each. That is the suffix array.",
+ steps:["List all suffixes of the string.","Sort them lexicographically.","Store the start index of each suffix in the sorted order.","Search by binary searching for the pattern in the sorted suffixes."],
+ pseudo:"naive(s):\n  suffixes = sorted(range(len(s)), key=lambda i: s[i:])\n  return suffixes\n\nEfficient construction:\n  Doubling: O(n log^2 n) with comparison-based sort\n  or O(n log n) with radix sort on ranks\n  SA-IS: O(n) linear time\n  DC3: O(n) linear time\n\nSearch pattern p in suffix array SA:\n  binary search for p's prefix\n  O(m log n)",
+ uses:"Full-text search, genome alignment, data compression, plagiarism detection.",
+ strength:"O(n) space. Simple to store (one integer array). Cache friendly.",
+ limits:"Binary search is O(m log n) per query. FM-index gives O(m).",
+ pitfall:"Naive construction is O(n^2 log n). Use doubling or SA-IS for large inputs.",
+ question:"How many integers does a suffix array store for a string of length n?",
+ answer:"n integers, one per suffix. Typically 4 or 8 bytes each, so 4n to 8n bytes.",
+ demo:"suffix-array",sample:"banana",refs:[
+  ["Manber and Myers, Suffix arrays: a new method for on-line string searches, SIAM J. Comput. 1993","https://doi.org/10.1137/0222058"],
+  ["Wikipedia, Suffix array","https://en.wikipedia.org/wiki/Suffix_array"],
+  ["Gusfield, Algorithms on Strings, Trees, and Sequences, Chapter 7","https://www.cambridge.org/core/books/algorithms-on-strings-trees-and-sequences/"]]},
+{id:"sa-is",title:"SA-IS linear-time suffix array",level:5,kind:"Suffix array construction",status:"Concept lesson",
+ summary:"SA-IS (Suffix Array Induced Sorting) builds a suffix array in O(n) time and space using induced sorting from a small set of LMS suffixes. It is the standard for practical suffix array construction.",
+ mental:"Classify, then induce the order from a small sample",
+ mentalText:"Classify each suffix as S-type or L-type. Find LMS suffixes (L followed by S). Sort them recursively. Use them to induce the order of all other suffixes.",
+ steps:["Classify each position as S-type (smaller than its successor) or L-type.","Find LMS positions (L-type followed by S-type).","Recursively sort the LMS suffixes.","Induce the order of L-type suffixes from the sorted LMS positions, scanning left to right.","Induce the order of S-type suffixes, scanning right to left."],
+ pseudo:"sa_is(s):\n  n = len(s) + 1   # append sentinel\n  type = classify(s)   # S or L\n  lms = find_lms(type)\n\n  # step 1: sort LMS suffixes recursively\n  lms_order = sort_lms(s, lms, type)\n\n  # step 2: induce L-type from LMS\n  SA = [-1] * n\n  place LMS in order\n  induce_L(SA, s, type)\n  induce_S(SA, s, type)\n\nTime: O(n)\nSpace: O(n)\nKey insight:\n  induced sorting propagates known order to unknown suffixes\n  the recursion is on at most n/2 positions",
+ uses:"Building suffix arrays for large texts (genomes, corpora). Used in production tools like BWA and Bowtie.",
+ strength:"Linear time. Simple in outline, though the details are subtle.",
+ limits:"Recursive. Constant factor is higher than some other O(n) algorithms.",
+ pitfall:"The classification of S vs L types depends on the sentinel being the smallest character. Missing this gives wrong output.",
+ question:"What is an LMS suffix?",
+ answer:"A suffix whose position i is L-type and i+1 is S-type. In other words, a left-to-right descent followed by a right-to-left ascent.",
+ demo:"none",sample:"",refs:[
+  ["Nong, Zhang, Chan, Two efficient algorithms for linear time suffix array construction, IEEE Trans. Computers 2011","https://doi.org/10.1109/TC.2010.188"],
+  ["Kärkkäinen and Sanders, Simple linear work suffix array construction, ICALP 2003","https://doi.org/10.1007/3-540-45061-0_73"],
+  ["Wikipedia, SA-IS","https://en.wikipedia.org/wiki/Suffix_array#Construction_Algorithms"]]},
+{id:"kasai-lcp",title:"Kasai LCP array",level:4,kind:"Suffix structure",status:"Runnable teaching lab",
+ summary:"The LCP array stores the length of the longest common prefix between adjacent suffixes in the suffix array. Kasai's algorithm builds it in O(n) time using the suffix array and its inverse.",
+ mental:"How much adjacent suffixes share",
+ mentalText:"For each pair of adjacent suffixes, record how many characters match. Kasai's algorithm reuses computations to make this linear time.",
+ steps:["Compute the rank (inverse suffix array).","Walk the string left to right.","At position i, if rank[i] > 0, compute the LCP with the previous suffix in sorted order.","Use the previous LCP minus 1 as a starting point."],
+ pseudo:"kasai(s, SA):\n  n = len(s)\n  rank = [0] * n\n  for i, pos in enumerate(SA):\n    rank[pos] = i\n\n  h = 0\n  LCP = [0] * n\n  for i in range(n):\n    if rank[i] > 0:\n      j = SA[rank[i] - 1]\n      while i + h < n and j + h < n and s[i + h] == s[j + h]:\n        h += 1\n      LCP[rank[i]] = h\n      if h > 0: h -= 1\n  return LCP\n\nTime: O(n)\nSpace: O(n)",
+ uses:"Number of distinct substrings, longest common substring, finding repeats, suffix array search.",
+ strength:"Linear time. Simple.",
+ limits:"Only tells you the LCP between adjacent suffixes. Non-adjacent LCP needs a range minimum query over the LCP.",
+ pitfall:"The key trick is decrementing h by 1 before moving to the next i. Without it the algorithm is not linear.",
+ question:"How do you get the number of distinct substrings from the LCP array?",
+ answer:"n(n+1)/2 minus the sum of the LCP values. The LCP array counts shared prefixes of adjacent suffixes.",
+ demo:"kasai",sample:"banana",refs:[
+  ["Kasai et al., Linear-time longest-common-prefix computation in suffix arrays, CPM 2001","https://doi.org/10.1007/3-540-48194-X_17"],
+  ["Wikipedia, LCP array","https://en.wikipedia.org/wiki/LCP_array"],
+  ["cp-algorithms.com, Kasai LCP","https://cp-algorithms.com/string/suffix-array.html"]]},
+/* Chapter 7 */
+{id:"bwt",title:"Burrows-Wheeler transform",level:4,kind:"Compression",status:"Runnable teaching lab",
+ summary:"BWT rearranges a string so that similar characters cluster. The result is easier to compress and can be inverted. It is the basis of bzip2 and modern text indexes.",
+ mental:"Sort all rotations and take the last column",
+ mentalText:"List all rotations of the string. Sort them. Take the last character of each. The result is the BWT. It is reversible with the LF mapping.",
+ steps:["Form all rotations of s + '$'.","Sort the rotations lexicographically.","Output the last character of each rotation.","To invert, use the LF mapping: for each character, find its rank in the sorted characters."],
+ pseudo:"bwt(s):\n  s = s + '$'\n  rotations = [s[i:] + s[:i] for i in range(len(s))]\n  rotations.sort()\n  return ''.join(r[-1] for r in rotations)\n\ninverse_bwt(bwt):\n  # find the position of $ in bwt\n  # build LF mapping\n  # reconstruct the original string\n\nProperties:\n  same character clusters together\n  inversion is exact\n  used with move-to-front and Huffman coding in bzip2\n  aligned with suffix array\n\nTime: O(n log n) naive (O(n) with suffix array)",
+ uses:"Compression (bzip2), FM-index, string alignment (BWA), text indexing.",
+ strength:"Groups similar characters. Reversible. Basis of compact text indexes.",
+ limits:"Naive construction is O(n log n) or O(n^2) if rotations are listed. Use suffix array for O(n).",
+ pitfall:"The sentinel character '$' must be strictly smaller than all other characters. Otherwise the sort is ambiguous.",
+ question:"Why does BWT help compression?",
+ answer:"After the transform, characters that appear in similar contexts are adjacent. That makes runs of the same character, which compress very well.",
+ demo:"bwt",sample:"banana",refs:[
+  ["Burrows and Wheeler, A block-sorting lossless data compression algorithm, SRC 1994","https://www.hpl.hp.com/techreports/Compaq-DEC/SRC-RR-124.html"],
+  ["Wikipedia, Burrows-Wheeler transform","https://en.wikipedia.org/wiki/Burrows%E2%80%93Wheeler_transform"],
+  ["bzip2 source documentation","https://sourceware.org/bzip2/"]]},
+{id:"fm-index",title:"FM-index",level:5,kind:"Compressed index",status:"Concept lesson",
+ summary:"The FM-index combines the BWT with rank and select data structures. It supports pattern counting and locating in O(m) time using very little memory.",
+ mental:"A compressed full-text index",
+ mentalText:"The BWT clusters similar characters. Two small arrays, C and Occ, let you search backward through the pattern, narrowing the range of matching suffixes.",
+ steps:["Build the BWT of the text.","Compute C[c] = number of characters smaller than c in the text.","Compute Occ[c][i] = number of occurrences of c in BWT[0..i).","Search backward: start with the full range [0, n], narrow it for each character of the pattern from right to left."],
+ pseudo:"fm_index_build(text):\n  bwt = build_bwt(text)\n  C[c] = count of characters < c in text\n  Occ[c][i] = rank of c in bwt[0..i-1]\n\nsearch(pattern):\n  l, r = 0, n\n  for c in reversed(pattern):\n    l = C[c] + Occ[c][l]\n    r = C[c] + Occ[c][r]\n    if l >= r: return no match\n  return (l, r)  # number of occurrences = r - l\n\nMemory:\n  about 5n bits per character with compressed BWT\n  less than 1 byte per character\n\nTime: O(m) per pattern regardless of text size\nVery fast in practice with a wavelet tree for Occ",
+ uses:"BWA, Bowtie, bioinformatics alignment, full-text search with small memory.",
+ strength:"Very compact. Linear-time search. The index for a genome fits in a fraction of the genome size.",
+ limits:"Only supports backward search. Bidirectional search needs extra work.",
+ pitfall:"The BWT must include the sentinel character. Omitting it breaks the LF mapping.",
+ question:"How does FM-index search compare to suffix array search?",
+ answer:"FM-index search is O(m) and uses much less memory. Suffix array search is O(m log n) and stores n integers.",
+ demo:"none",sample:"",refs:[
+  ["Ferragina and Manzini, Opportunistic data structures with applications, FOCS 2000","https://doi.org/10.1109/SFCS.2000.892127"],
+  ["Langmead et al., Ultrafast and memory-efficient alignment of short DNA sequences, Genome Biology 2009","https://doi.org/10.1186/gb-2009-10-3-r25"],
+  ["Wikipedia, FM-index","https://en.wikipedia.org/wiki/FM-index"]]},
+{id:"wavelet-tree",title:"Wavelet tree",level:5,kind:"Compressed index",status:"Concept lesson",
+ summary:"A wavelet tree is a balanced binary tree over the alphabet that supports rank, select, range quantile and other queries in O(log sigma) time using n log sigma bits.",
+ mental:"Recursively split the alphabet in half",
+ mentalText:"At the root, split the alphabet into two halves. Store a bitmap saying which half each character belongs to. Recurse on the lower and upper halves.",
+ steps:["Split the alphabet into two halves at the root.","Store a bitmap: 0 for characters in the lower half, 1 for the upper half.","Recurse on the lower half string and the upper half string.","Rank of a character is computed by walking down to its leaf."],
+ pseudo:"build(s, alphabet):\n  if len(alphabet) <= 1: return leaf\n  mid = len(alphabet) // 2\n  lower = alphabet[:mid]\n  upper = alphabet[mid:]\n  bitmap = [1 if c in upper else 0 for c in s]\n  s_lower = [c for c in s if c in lower]\n  s_upper = [c for c in s if c in upper]\n  return node(bitmap, build(s_lower, lower), build(s_upper, upper))\n\nrank(c, i):\n  walk down to the leaf for c\n  at each level, use the bitmap to compute the new position\n\nTime: O(log sigma)\nSpace: n log sigma bits + small overhead",
+ uses:"Succinct text indexes, FM-index rank/select, range quantile queries, compressed suffix arrays.",
+ strength:"Extremely compact. Many query types supported.",
+ limits:"log sigma factor for every query. Building uses O(n log sigma) time.",
+ pitfall:"For large alphabets, use a wavelet matrix or compressed variant. The standard tree uses log sigma levels.",
+ question:"How much space does a wavelet tree take for a string of length n over an alphabet of size sigma?",
+ answer:"n log2(sigma) bits for the bitmaps plus small rank/select structures. For DNA (sigma = 4) that is 2n bits, less than 1 byte per base.",
+ demo:"none",sample:"",refs:[
+  ["Grossi, Gupta, Vitter, High-order entropy-compressed text indexes, SODA 2003","https://doi.org/10.1145/644108.644250"],
+  ["Navarro, Wavelet trees for all, Journal of Discrete Algorithms 2014","https://doi.org/10.1016/j.jda.2013.07.004"],
+  ["Wikipedia, Wavelet tree","https://en.wikipedia.org/wiki/Wavelet_tree"]]},
+{id:"lz-parsing",title:"LZ77 and LZ78 parsing",level:4,kind:"Compression parsing",status:"Runnable teaching lab",
+ summary:"LZ77 replaces repeated substrings with (distance, length) pairs pointing into a sliding window. LZ78 builds a growing phrase dictionary and emits (index, next character) pairs.",
+ mental:"Refer to earlier text instead of repeating",
+ mentalText:"When you see a phrase you have seen before, emit a reference to where it appeared rather than the whole phrase.",
+ steps:["LZ77: maintain a sliding window of recent text.","LZ77: at each position, find the longest match in the window.","LZ77: emit (distance, length) or a literal.","LZ78: build a dictionary of phrases.","LZ78: emit (phrase index, next character)."],
+ pseudo:"LZ77:\n  i = 0\n  while i < n:\n    find longest match of text[i:] in window text[max(0, i-W):i]\n    if match length >= min_match:\n      emit (distance, length)\n      i += length\n    else:\n      emit literal text[i]\n      i += 1\n\nLZ78:\n  dict = {}\n  i = 0\n  while i < n:\n    j = longest prefix of text[i:] that is in dict\n    if j < len(text) - i:\n      emit (dict[text[i:i+j]], text[i+j])\n      dict[text[i:i+j+1]] = next_id++\n      i += j + 1\n    else:\n      emit (dict[text[i:i+j]], '')\n      i += j",
+ uses:"gzip, ZIP (DEFLATE combines LZ77 with Huffman), LZW in GIF/TIFF, LZMA in 7-zip, zstd.",
+ strength:"Replaces repeated content with short references. Very effective on text and code.",
+ limits:"Needs a good match finder. Long range matches need large windows.",
+ pitfall:"LZ77 minimum match length must be at least 3 characters. Short matches cost more to encode than literals.",
+ question:"How does LZ77 differ from LZ78?",
+ answer:"LZ77 refers to earlier text by distance and length. LZ78 builds a dictionary of phrases and refers by phrase index.",
+ demo:"lz-parsing",sample:"abracadabra abracadabra",refs:[
+  ["Ziv and Lempel, A universal algorithm for sequential data compression, IEEE TIT 1977","https://doi.org/10.1109/TIT.1977.1055714"],
+  ["Ziv and Lempel, Compression of individual sequences via variable-rate coding, IEEE TIT 1978","https://doi.org/10.1109/TIT.1978.1055934"],
+  ["Wikipedia, LZ77 and LZ78","https://en.wikipedia.org/wiki/LZ77_and_LZ78"]]},
+/* Chapter 8 */
+{id:"thompson-nfa",title:"Thompson NFA construction",level:4,kind:"Regex",status:"Concept lesson",
+ summary:"Thompson's construction builds an NFA from a regular expression using small building blocks for each operator. The NFA has size O(m) and can simulate matching in O(n m) time.",
+ mental:"Every operator becomes a small piece of a graph",
+ mentalText:"A single character is a two-state NFA. Concatenation chains them. Union splits. Kleene star loops. Combine into one NFA.",
+ steps:["Character: two states, one edge labeled with the character.","Concatenation: connect end of first to start of second.","Union: add a start state with epsilon edges to both branches.","Kleene star: add a loop and epsilon edges.","Combine all pieces into one NFA with a single start and a single accept state."],
+ pseudo:"Each sub-NFA has exactly one start and one accept state.\n\nRule for character c:\n  s1 --c--> s2\n\nRule for concatenation (A B):\n  A.accept --epsilon--> B.start\n\nRule for union (A | B):\n  new_start --epsilon--> A.start\n  new_start --epsilon--> B.start\n  A.accept --epsilon--> new_accept\n  B.accept --epsilon--> new_accept\n\nRule for Kleene star (A*):\n  new_start --epsilon--> A.start\n  new_start --epsilon--> new_accept\n  A.accept --epsilon--> A.start\n  A.accept --epsilon--> new_accept\n\nSize: O(m) for a regex of length m\nSimulation: O(n * m) with NFA subset state tracking\n(Or O(n) with a DFA built by subset construction)",
+ uses:"regex engines, lexers, string validation, pattern matching.",
+ strength:"Simple construction. Linear-size NFA. Guaranteed O(n m) matching.",
+ limits:"O(n m) is slower than DFA-based engines. DFA can blow up exponentially in size.",
+ pitfall:"Epsilon transitions must be followed during simulation. Forgetting them misses matches.",
+ question:"How many states does a Thompson NFA have for a regex of length m?",
+ answer:"O(m). Each character adds 2 states. Each operator adds a constant number.",
+ demo:"none",sample:"",refs:[
+  ["Thompson, Programming techniques: regular expression search algorithm, CACM 1968","https://doi.org/10.1145/363347.363387"],
+  ["Russ Cox, Regular Expression Matching Can Be Simple And Fast, 2007","https://swtch.com/~rsc/regexp/regexp1.html"],
+  ["Wikipedia, Thompson's construction","https://en.wikipedia.org/wiki/Thompson%27s_construction"]]},
+{id:"glushkov",title:"Glushkov construction",level:5,kind:"Regex",status:"Concept lesson",
+ summary:"Glushkov's construction builds an NFA with no epsilon transitions. States correspond to positions in the regex. It has size O(m) and matching is O(n m).",
+ mental:"A regex without epsilon edges",
+ mentalText:"Each position in the regex becomes a state. Transitions follow the concatenation and union structure. No epsilon transitions, so simulation is simpler.",
+ steps:["Number each character position in the regex.","Compute four sets for each subexpression: first, last, nullable, and follow.","Build states from positions.","Add transitions from follow relations.","Start state goes to first positions."],
+ pseudo:"Glushkov construction:\n  For subexpression e, compute:\n    first(e) = positions that can start a match\n    last(e) = positions that can end a match\n    nullable(e) = can e match the empty string\n    follow(e) = pairs (i, j) where j can follow i\n\n  States = positions in the regex\n  Start = new state with edges to first(e)\n  Accept = positions in last(e)\n\nSize: O(m)\nSimulation: O(n * m)\nNo epsilon transitions\nDirect simulation with a bit-set of active positions",
+ uses:"Regex engines that want to avoid epsilon closure, like RE2 and Rust regex.",
+ strength:"No epsilon transitions. Simpler simulation. Can be implemented with bit-parallel operations.",
+ limits:"Construction is more complex than Thompson.",
+ pitfall:"The follow relation must be computed correctly. Missing edges means missing matches.",
+ question:"Why is Glushkov preferred over Thompson in some engines?",
+ answer:"No epsilon transitions means simulation only tracks current positions, which can be done with bit-parallel operations for O(n m / w) time.",
+ demo:"none",sample:"",refs:[
+  ["Glushkov, The abstract theory of automata, Russian Math. Surveys 1961","https://doi.org/10.1070/RM1961v016n05ABEH004112"],
+  ["Bruggemann-Klein, Regular expressions into finite automata, TCS 1993","https://doi.org/10.1016/0304-3975(93)90287-4"],
+  ["RE2 syntax documentation","https://github.com/google/re2/wiki/Syntax"]]},
+{id:"brzozowski",title:"Brzozowski derivatives",level:5,kind:"Regex",status:"Concept lesson",
+ summary:"Brzozowski derivatives compute the residual of a regular expression after consuming one character. A regex matches a string if after consuming all characters the residual is nullable.",
+ mental:"The rest of the regex still to match",
+ mentalText:"After reading one character, the regex is transformed into the regex for the remaining string. If the original matches ab, the derivative with respect to a matches b.",
+ steps:["Define the derivative d_a(r) of regex r with respect to character a.","Base cases: d_a(empty) = empty, d_a('') = empty, d_a(a) = '', d_a(b) = empty for b != a.","For unions, concatenations and stars, apply the recursive rules.","Match a string by repeatedly taking derivatives.","The string matches if the final derivative is nullable."],
+ pseudo:"derivative(r, a):\n  if r is empty or r is '': return empty\n  if r is char c: return '' if c == a else empty\n  if r is (p | q): return derivative(p, a) | derivative(q, a)\n  if r is (p q):\n    return (derivative(p, a) q) | (derivative(q, a) if nullable(p) else empty)\n  if r is p*: return derivative(p, a) p*\n\nnullable(r):\n  empty -> False\n  '' -> True\n  char c -> False\n  p | q -> nullable(p) or nullable(q)\n  p q -> nullable(p) and nullable(q)\n  p* -> True\n\nmatch(r, s):\n  for c in s: r = derivative(r, c)\n  return nullable(r)\n\nTime: naive is exponential\nWith memoization: O(2^m) states (still can blow up)",
+ uses:"Formal language theory, teaching regex semantics, symbolic regex manipulation.",
+ strength:"Clean mathematical foundation for regex semantics.",
+ limits:"Can blow up without memoization. Not used in production regex engines.",
+ pitfall:"The derivative of a concatenation is not just the derivative of the first part. You also need to handle the case where the first part is nullable.",
+ question:"What is the derivative of (a|b)*c with respect to a?",
+ answer:"(a|b)*c. Because the star part consumes the a and can keep matching.",
+ demo:"none",sample:"",refs:[
+  ["Brzozowski, Derivatives of regular expressions, JACM 1964","https://doi.org/10.1145/321239.321249"],
+  ["Owens, Reppy, Turon, Regular-expression derivatives reexamined, JFP 2009","https://doi.org/10.1017/S0956796808007090"],
+  ["Wikipedia, Brzozowski derivative","https://en.wikipedia.org/wiki/Brzozowski_derivative"]]},
+{id:"shunting-yard",title:"Shunting-yard algorithm",level:3,kind:"Parsing",status:"Runnable teaching lab",
+ summary:"Shunting-yard parses infix expressions into postfix notation using a stack of operators. It is the classic algorithm for evaluating or compiling arithmetic and regex expressions.",
+ mental:"Rearranging operators and operands with a stack",
+ mentalText:"Read tokens left to right. Push operators onto a stack. When an operator with lower precedence arrives, pop and emit the stack. At the end, emit everything left.",
+ steps:["Read tokens from left to right.","Numbers go directly to the output.","Operators pop from the stack while their precedence is higher.","Parentheses control the stack.","At the end, pop the entire stack."],
+ pseudo:"shunting_yard(tokens):\n  output = []\n  stack = []\n  for tok in tokens:\n    if tok is number: output.append(tok)\n    elif tok is operator op:\n      while stack and stack[-1] is operator and\n            precedence(stack[-1]) >= precedence(op):\n        output.append(stack.pop())\n      stack.append(op)\n    elif tok == '(':\n      stack.append(tok)\n    elif tok == ')':\n      while stack[-1] != '(':\n        output.append(stack.pop())\n      stack.pop()   # remove '('\n  while stack:\n    output.append(stack.pop())\n  return output\n\nExample: 3 + 4 * 2 / (1 - 5)\n  tokens: 3 + 4 * 2 / ( 1 - 5 )\n  output: 3 4 2 * 1 5 - / +\n\nTime: O(n) for n tokens",
+ uses:"Expression evaluation, calculator apps, regex compilers, JSON/query parsing.",
+ strength:"Simple and linear time.",
+ limits:"Only for infix expressions. Does not handle some edge cases with unary operators.",
+ pitfall:"The associativity of operators matters. Left-associative operators pop on >=, right-associative on >.",
+ question:"How do you handle unary minus in shunting-yard?",
+ answer:"Treat it as a right-associative operator with high precedence. Different engines use different conventions.",
+ demo:"shunting-yard",sample:"3 + 4 * 2 / ( 1 - 5 )",refs:[
+  ["Dijkstra, Shunting-yard algorithm, 1961 (published in EWD manuscripts)","https://www.cs.utexas.edu/users/EWD/"],
+  ["Wikipedia, Shunting-yard algorithm","https://en.wikipedia.org/wiki/Shunting-yard_algorithm"],
+  ["Aho, Lam, Sethi, Ullman, Compilers: Principles, Techniques, and Tools, Chapter 4","https://www.pearson.com/en-us/subject-catalog/p/compilers-principles-techniques-and-tools/P200000003478"]]},
+{id:"ll-lr-lalr",title:"LL, LR and LALR parsing",level:5,kind:"Parsing",status:"Concept lesson",
+ summary:"LL parsers read left to right and produce a leftmost derivation. LR parsers read left to right and produce a rightmost derivation. LALR is a practical subset of LR that uses less memory.",
+ mental:"Top-down versus bottom-up parsing",
+ mentalText:"LL parsers predict the next rule from the input (top-down). LR parsers shift and reduce (bottom-up) and handle more grammars.",
+ steps:["LL: parse the grammar and build a FIRST/FOLLOW table.","LL: process tokens, predicting rules.","LR: build a canonical collection of LR(1) items.","LR: use a stack and a state machine to shift and reduce.","LALR: merge LR(1) states with the same core to save memory."],
+ pseudo:"LL(1) parsing:\n  For non-terminal A and lookahead t, use table[A][t] to pick a production.\n  Grammar must not be left-recursive or ambiguous.\n\nLR(1) parsing:\n  State = set of items [A -> alpha . beta, a]\n  Actions: shift, reduce, accept, error\n  Table built from canonical collection\n\nLALR(1):\n  Merge states with identical LR(0) cores\n  Same power as LR(1) for most practical grammars\n  Used by yacc, bison\n\nLL used by: ANTLR, some hand-written parsers\nLR used by: yacc, bison, JavaCC",
+ uses:"Compilers, interpreters, configuration files, query languages.",
+ strength:"LL is simple and top-down. LR handles more grammars including left-recursive ones.",
+ limits:"LL cannot handle left recursion. LR tables can be large.",
+ pitfall:"Left recursion in a grammar must be eliminated for LL parsers. Directly writing recursive descent for left-recursive rules causes infinite loops.",
+ question:"What is the main difference between LL and LR parsing?",
+ answer:"LL is top-down and predicts rules from the lookahead. LR is bottom-up and shifts tokens until a rule can be reduced.",
+ demo:"none",sample:"",refs:[
+  ["Knuth, On the translation of languages from left to right, Information and Control 1965","https://doi.org/10.1016/S0019-9958(65)90426-2"],
+  ["Aho, Lam, Sethi, Ullman, Compilers: Principles, Techniques, and Tools, Chapters 4-5","https://www.pearson.com/en-us/subject-catalog/p/compilers-principles-techniques-and-tools/P200000003478"],
+  ["Wikipedia, LR parser","https://en.wikipedia.org/wiki/LR_parser"]]},
+{id:"packrat",title:"Packrat parsing",level:5,kind:"Parsing",status:"Concept lesson",
+ summary:"Packrat parsing uses memoization to make recursive descent parsers run in linear time. It caches the result of every rule at every position, avoiding exponential backtracking.",
+ mental:"Remember what you tried so you never try it twice",
+ mentalText:"When a rule fails or succeeds at a position, remember the result. The next time the parser tries the same rule at the same position, reuse the cached answer.",
+ steps:["Define the grammar as a set of rules.","Each rule is a function of position.","Before running a rule at a position, check the memo table.","If a result is cached, return it.","Otherwise, run the rule, cache the result, and return."],
+ pseudo:"memo = {}   # (rule, position) -> result\n\nparse(rule, pos):\n  key = (rule, pos)\n  if key in memo: return memo[key]\n  result = rule.parse(pos)\n  memo[key] = result\n  return result\n\nProperties:\n  linear time in input length\n  linear space for the memo table\n  supports arbitrary lookahead\n  works with PEG (parsing expression grammars)\n\nUsed by:\n  Rats! (Java)\n  parboiled, PEG.js\n  Python's pegen (CPython 3.9+)\n  TatSu, Guido van Rossum's PEG parser",
+ uses:"Parsers that need to handle complex grammars with backtracking.",
+ strength:"Linear time even for backtracking grammars. Simple concept.",
+ limits:"Memoization uses O(n) memory. Not compatible with streaming input.",
+ pitfall:"The memo table is keyed by rule and position. Missing this in the implementation gives exponential time.",
+ question:"Why does packrat parsing use linear time?",
+ answer:"Each rule-position pair is computed at most once. With n positions and r rules, the total work is O(n r).",
+ demo:"none",sample:"",refs:[
+  ["Ford, Packrat parsing: simple, powerful, lazy, linear time, ICFP 2002","https://doi.org/10.1145/581478.581483"],
+  ["Medeiros et al., Left recursion in parsing expression grammars, SLE 2014","https://doi.org/10.1007/978-3-319-11245-9_2"],
+  ["CPython pegen documentation","https://github.com/python/cpython/tree/main/Tools/peg_generator"]]},
+/* Chapter 9 */
+{id:"dfa-min",title:"DFA minimization",level:4,kind:"Automata",status:"Runnable teaching lab",
+ summary:"DFA minimization merges equivalent states so the DFA has the fewest possible states. Two states are equivalent if they accept exactly the same suffix strings.",
+ mental:"Merge states that behave the same on all inputs",
+ mentalText:"If two states accept the same strings for every possible continuation, they are the same. Merge them.",
+ steps:["Remove unreachable states.","Mark pairs of states as distinguishable if one accepts and the other does not.","Propagate distinguishability: if two states transition to distinguishable states on a symbol, they are distinguishable.","Merge all pairs that remain indistinguishable."],
+ pseudo:"hopcroft_minimize(dfa):\n  remove unreachable states\n  partition = {accept_states, non_accept_states}\n  worklist = [accept_states]\n  while worklist:\n    S = worklist.pop()\n    for c in alphabet:\n      # find states that transition to S on c\n      X = {q : delta(q, c) in S}\n      for each block Y in current partition:\n        split Y into Y ∩ X and Y \\ X\n        if both non-empty:\n          replace Y with the two pieces\n          add the smaller to worklist\n  build the minimized DFA from the partition",
+ uses:"Regex engines, compilers, network protocol parsing, text tokenizers.",
+ strength:"Smallest possible DFA. Optimal.",
+ limits:"Naive O(n^2) minimization. Hopcroft's algorithm is O(n log n).",
+ pitfall:"Unreachable states must be removed first. Otherwise they can prevent merging of reachable states.",
+ question:"Why does DFA minimization matter?",
+ answer:"Smaller DFAs are faster to simulate and use less memory. Regex engines that build a DFA benefit directly.",
+ demo:"dfa-min",sample:"",refs:[
+  ["Hopcroft, An n log n algorithm for minimizing states in a finite automaton, 1971","https://doi.org/10.1016/B978-0-12-417750-6.50022-4"],
+  ["Wikipedia, DFA minimization","https://en.wikipedia.org/wiki/DFA_minimization"],
+  ["Aho, Lam, Sethi, Ullman, Compilers, Section 3.9","https://www.pearson.com/en-us/subject-catalog/p/compilers-principles-techniques-and-tools/P200000003478"]]},
+{id:"hopcroft",title:"Hopcroft DFA minimization",level:5,kind:"Automata",status:"Concept lesson",
+ summary:"Hopcroft's algorithm minimizes a DFA in O(n log n) time using partition refinement and a worklist. It is the fastest known algorithm for DFA minimization.",
+ mental:"Split the partition efficiently",
+ mentalText:"Start with two blocks: accepting and non-accepting. Repeatedly split blocks based on where their states go under each input symbol. Use the worklist to process the smallest block.",
+ steps:["Initial partition: accepting states and non-accepting states.","Worklist contains blocks to process.","Pop a block from the worklist.","For each symbol, compute the set of predecessors.","Split any block that overlaps with the predecessor set.","Add the smaller half to the worklist."],
+ pseudo:"hopcroft(dfa):\n  P = {F, Q \\ F}   # accepting and non-accepting\n  W = {min(F, Q \\ F, key=len)}   # worklist\n\n  while W:\n    A = W.pop()\n    for c in alphabet:\n      X = predecessors of A under c\n      for each block Y in P that intersects X:\n        Y1 = Y ∩ X\n        Y2 = Y \\ X\n        replace Y with Y1 and Y2 in P\n        if Y in W:\n          replace Y with Y1 and Y2 in W\n        else:\n          add the smaller of Y1, Y2 to W\n\nTime: O(n log n)\nSpace: O(n)\n\nProduces the smallest DFA equivalent to the input.",
+ uses:"Compiler lexer generation, regex engines, protocol verification, hardware design.",
+ strength:"Optimal. Fastest known.",
+ limits:"Complex to implement. Only for DFAs.",
+ pitfall:"The predecessor computation is the key step. Computing it incorrectly breaks the split logic.",
+ question:"Why is Hopcroft's algorithm O(n log n) instead of O(n^2)?",
+ answer:"By always processing the smaller of the two pieces, the algorithm amortizes the work. Each state is processed O(log n) times.",
+ demo:"none",sample:"",refs:[
+  ["Hopcroft, An n log n algorithm for minimizing states in a finite automaton, 1971","https://doi.org/10.1016/B978-0-12-417750-6.50022-4"],
+  ["Knuutila, Re-describing an algorithm by Hopcroft, TCS 2001","https://doi.org/10.1016/S0304-3975(00)00176-0"],
+  ["Wikipedia, DFA minimization, Hopcroft's algorithm","https://en.wikipedia.org/wiki/DFA_minimization#Hopcroft's_algorithm"]]},
+{id:"unicode-segmentation",title:"Unicode segmentation",level:4,kind:"Text processing",status:"Runnable teaching lab",
+ summary:"Unicode segmentation splits a string into user-perceived units: grapheme clusters, words, sentences or line breaks. UAX #29 defines the rules precisely.",
+ mental:"Where a user thinks a character ends",
+ mentalText:"The letter 'é' might be one code point or two. A grapheme cluster groups them into one user-visible character. Emoji sequences are often multiple code points but one grapheme.",
+ steps:["Read the string as code points.","Apply the grapheme cluster rules from UAX #29.","Group code points into clusters.","For words and sentences, apply the corresponding boundary rules."],
+ pseudo:"Grapheme cluster rules (UAX #29, simplified):\n  Don't break between a base character and a combining mark.\n  Don't break within an emoji ZWJ sequence.\n  Don't break between regional indicators of a flag.\n\nExample: 'e' + U+0301 (combining acute)\n  One grapheme cluster, two code points\n\nExample: family emoji\n  👨 👩 👧 (separated by ZWJ)\n  One grapheme cluster, multiple code points\n\nAlgorithm:\n  Use a state machine over properties of adjacent code points\n  Each boundary is decided by a rule",
+ uses:"Text rendering, cursor movement, backspace handling, text editors, search.",
+ strength:"Matches user intuition for character boundaries.",
+ limits:"Rules are complex and change between Unicode versions.",
+ pitfall:"JavaScript string length uses UTF-16 code units. A single grapheme may be multiple code units. Use Intl.Segmenter or a library.",
+ question:"How many grapheme clusters does '👨‍👩‍👧' have?",
+ answer:"One. The family emoji is a ZWJ sequence of multiple code points but visually one grapheme.",
+ demo:"unicode-segment",sample:"👨‍👩‍👧\ncafé\ne\u0301\n🇺🇸",refs:[
+  ["Unicode Standard Annex #29: Unicode Text Segmentation","https://www.unicode.org/reports/tr29/"],
+  ["UAX #14: Unicode Line Breaking Algorithm","https://www.unicode.org/reports/tr14/"],
+  ["Wikipedia, Grapheme","https://en.wikipedia.org/wiki/Grapheme"]]},
+{id:"tokenization",title:"Tokenization and lexer generators",level:4,kind:"Text processing",status:"Concept lesson",
+ summary:"Tokenization splits a text into tokens like identifiers, numbers and operators. Lexer generators like lex and flex build the tokenizer from a set of regular expressions.",
+ mental:"Cut text into meaningful pieces",
+ mentalText:"A tokenizer reads characters and emits tokens. The lexer generator takes regex rules for each token type and produces a DFA that recognizes them.",
+ steps:["Define regex rules for each token type.","Combine into a single DFA.","Scan the input, always matching the longest token.","Apply priority rules for ties.","Emit the token with its type and value."],
+ pseudo:"Lexer generator:\n  1. Parse the token regex rules.\n  2. Build an NFA for each rule (Thompson).\n  3. Combine into one NFA with a single start.\n  4. Convert to DFA (subset construction).\n  5. Minimize the DFA.\n  6. Simulate the DFA on the input, emitting tokens.\n\nLongest match rule:\n  if multiple rules match, take the longest.\n\nPriority rule:\n  on ties, take the rule listed first.\n\nExamples: identifiers, integers, floats, operators, keywords, whitespace.",
+ uses:"Compilers, interpreters, syntax highlighters, log parsers, configuration file parsers.",
+ strength:"Fast (DFA-based). Predictable. Easy to test.",
+ limits:"Cannot handle context-sensitive constructs. Keywords may need to be filtered after matching identifiers.",
+ pitfall:"The longest match rule matters. Without it, '=>' in 'a => b' may be tokenized as '=' followed by '>'. Rule priority breaks the tie.",
+ question:"Why do keyword tokenizers need extra filtering?",
+ answer:"Keywords like 'if' are also valid identifiers. The DFA matches the identifier rule and then a second pass checks against the keyword list.",
+ demo:"tokenize",sample:"x = 3 + 4 * (y - 1)",refs:[
+  ["Lesk and Schmidt, Lex: A lexical analyzer generator, 1975","https://www.cs.princeton.edu/~appel/modern/"],
+  ["Aho, Lam, Sethi, Ullman, Compilers: Principles, Techniques, and Tools, Chapter 3","https://www.pearson.com/en-us/subject-catalog/p/compilers-principles-techniques-and-tools/P200000003478"],
+  ["Wikipedia, Lexical analysis","https://en.wikipedia.org/wiki/Lexical_analysis"]]},
+/* Chapter 10 */
+{id:"needleman-wunsch",title:"Needleman-Wunsch global alignment",level:4,kind:"Bioinformatics",status:"Runnable teaching lab",
+ summary:"Needleman-Wunsch aligns two sequences globally, finding the best alignment that spans the entire length of both sequences. It is the standard O(n m) DP for sequence alignment.",
+ mental:"Line up two strings so that matches are maximized",
+ mentalText:"Align every character of both strings, allowing gaps. Score matches positive and mismatches and gaps negative. Find the alignment with the highest score.",
+ steps:["Initialize a DP table with gap penalties in the first row and column.","For each cell, take the max of diagonal (match or mismatch), up (gap in first), left (gap in second).","Fill the table.","Trace back from the bottom right to reconstruct the alignment."],
+ pseudo:"needleman_wunsch(a, b, match=1, mismatch=-1, gap=-1):\n  n, m = len(a), len(b)\n  D = [[0] * (m + 1) for _ in range(n + 1)]\n  for i in range(n + 1): D[i][0] = i * gap\n  for j in range(m + 1): D[0][j] = j * gap\n  for i in range(1, n + 1):\n    for j in range(1, m + 1):\n      s = match if a[i-1] == b[j-1] else mismatch\n      D[i][j] = max(\n        D[i - 1][j - 1] + s,   # diagonal\n        D[i - 1][j] + gap,     # gap in b\n        D[i][j - 1] + gap      # gap in a\n      )\n  # trace back to get the alignment\n  return D[n][m]\n\nTime: O(n * m)\nSpace: O(n * m) or O(min(n, m)) for the score only",
+ uses:"DNA and protein sequence alignment, diff tools, speech recognition, machine translation.",
+ strength:"Optimal global alignment. Simple DP.",
+ limits:"O(n m) too slow for very long sequences. Hirschberg gives O(n) space but same time.",
+ pitfall:"Gap penalties must be consistent. Different penalties give different alignments.",
+ question:"What is the difference between global and local alignment?",
+ answer:"Global (Needleman-Wunsch) aligns the entire length of both sequences. Local (Smith-Waterman) finds the best matching substrings.",
+ demo:"nw",sample:"GATTACA\nGCATGCU",refs:[
+  ["Needleman and Wunsch, A general method applicable to the search for similarities in the amino acid sequence of two proteins, JMB 1970","https://doi.org/10.1016/0022-2836(70)90057-4"],
+  ["Wikipedia, Needleman-Wunsch algorithm","https://en.wikipedia.org/wiki/Needleman%E2%80%93Wunsch_algorithm"],
+  ["Durbin et al., Biological Sequence Analysis, Cambridge 1998","https://www.cambridge.org/core/books/biological-sequence-analysis/"]]},
+{id:"smith-waterman",title:"Smith-Waterman local alignment",level:4,kind:"Bioinformatics",status:"Runnable teaching lab",
+ summary:"Smith-Waterman finds the best local alignment between two sequences. It allows the alignment to start and end anywhere, so it can find conserved regions in longer sequences.",
+ mental:"Find the best matching substring in both sequences",
+ mentalText:"Similar DP to Needleman-Wunsch, but the score is clamped at 0. The best alignment starts where the score leaves 0 and ends at the maximum.",
+ steps:["Initialize a DP table with zeros.","For each cell, take max of 0, diagonal, up, left.","Track the maximum score and its position.","Trace back from the maximum until a zero is reached."],
+ pseudo:"smith_waterman(a, b, match=2, mismatch=-1, gap=-1):\n  n, m = len(a), len(b)\n  D = [[0] * (m + 1) for _ in range(n + 1)]\n  best = 0\n  best_pos = (0, 0)\n  for i in range(1, n + 1):\n    for j in range(1, m + 1):\n      s = match if a[i-1] == b[j-1] else mismatch\n      D[i][j] = max(\n        0,\n        D[i - 1][j - 1] + s,\n        D[i - 1][j] + gap,\n        D[i][j - 1] + gap\n      )\n      if D[i][j] > best:\n        best = D[i][j]\n        best_pos = (i, j)\n  # trace back from best_pos until 0\n  return best\n\nTime: O(n * m)\nSpace: O(n * m)",
+ uses:"Biological sequence alignment, BLAST's seed-and-extend phase, diff tools.",
+ strength:"Finds local similarities. Robust to unrelated flanking regions.",
+ limits:"O(n m) is slow for large sequences. Heuristics (BLAST) are needed for genome-scale.",
+ pitfall:"The trace-back stops at the first zero. Continuing past it is a bug.",
+ question:"What does a zero cell mean in Smith-Waterman?",
+ answer:"No positive-scoring alignment ends at that cell. The best local alignment starts fresh after a zero.",
+ demo:"sw",sample:"GATTACA\nGCATGCU",refs:[
+  ["Smith and Waterman, Identification of common molecular subsequences, JMB 1981","https://doi.org/10.1016/0022-2836(81)90087-5"],
+  ["Wikipedia, Smith-Waterman algorithm","https://en.wikipedia.org/wiki/Smith%E2%80%93Waterman_algorithm"],
+  ["Durbin et al., Biological Sequence Analysis, Cambridge 1998","https://www.cambridge.org/core/books/biological-sequence-analysis/"]]},
+{id:"blast",title:"BLAST concepts",level:5,kind:"Bioinformatics",status:"Concept lesson",
+ summary:"BLAST (Basic Local Alignment Search Tool) is a heuristic for fast local sequence alignment. It uses seed words, extends them, and evaluates alignments statistically with E-values.",
+ mental:"Find seeds, extend matches, score statistically",
+ mentalText:"Instead of aligning every pair, BLAST finds short exact matches (seeds) and extends them. Statistically significant alignments are reported.",
+ steps:["Break the query into short words of length w.","For each word, find database entries with the same word.","Extend the seed to a longer alignment (ungapped, then gapped).","Score the alignment.","Report the highest-scoring ones with E-values."],
+ pseudo:"blast(query, database, w=11):\n  # 1. Index the database or the query\n  words = split query into w-mers\n  for each word:\n    candidates = database.positions_of(word)\n    for cand in candidates:\n      # 2. Extend seed\n      alignment = extend_seed(query, database, cand)\n      if alignment.score >= threshold:\n        # 3. Compute E-value\n        E = m * n * 2^(-alignment.score)\n        if E < max_E:\n          report alignment\n\nKey parameters:\n  w = word size (11 for DNA, 3 for protein)\n  E-value = expected number of alignments this good by chance\n  BLAST is heuristic; not guaranteed optimal",
+ uses:"Genome annotation, protein function prediction, sequence database search, evolutionary biology.",
+ strength:"Fast (indexes + seeds). Scales to large databases.",
+ limits:"Heuristic. May miss alignments that do not share a seed. Not guaranteed optimal.",
+ pitfall:"BLAST finds local alignments, not global. A 'hit' may cover only a small portion of the query.",
+ question:"What does an E-value of 1e-50 mean?",
+ answer:"You expect to see an alignment this good by chance less than 1e-50 times in a database of this size. Strong evidence of homology.",
+ demo:"none",sample:"",refs:[
+  ["Altschul et al., Basic local alignment search tool, JMB 1990","https://doi.org/10.1016/S0022-2836(05)80360-2"],
+  ["Altschul et al., Gapped BLAST and PSI-BLAST, NAR 1997","https://doi.org/10.1093/nar/25.17.3389"],
+  ["NCBI BLAST documentation","https://blast.ncbi.nlm.nih.gov/"]]},
+{id:"minimap2-bwa",title:"Minimap2 and BWA",level:5,kind:"Bioinformatics",status:"Concept lesson",
+ summary:"Minimap2 aligns long reads (PacBio, Oxford Nanopore) using minimizers. BWA aligns short reads to a reference genome using the FM-index. Both are standard tools in genomics.",
+ mental:"Minimizers for long reads, FM-index for short reads",
+ mentalText:"Minimap2 picks representative k-mers (minimizers) from each read to seed alignment. BWA indexes the genome with a suffix array or FM-index for fast exact matching.",
+ steps:["Minimap2: compute minimizers of the read and the reference.","Minimap2: chain minimizers into anchors, then align with DP.","BWA: build the FM-index of the reference.","BWA: for each read, find candidate loci with backward search.","BWA: extend and score candidates."],
+ pseudo:"Minimap2:\n  minimizers(read, window=w, k=k) = set of smallest k-mers per window\n  match minimizers between read and reference\n  chain matched anchors (colinear sets)\n  align each chain with banded DP\n  reports alignment with MAPQ score\n\nBWA-MEM:\n  index reference with FM-index (BWT + C + Occ)\n  for each read: find maximal exact matches (MEMs)\n  seed with MEMs\n  chain seeds into a local alignment\n  extend with Smith-Waterman\n\nBWA has multiple modes: aln, samse, mem\nMinimap2 also has modes for DNA, RNA, and assembly",
+ uses:"Genome sequencing, variant calling, structural variant detection, RNA-seq.",
+ strength:"Orders of magnitude faster than full DP. Handles millions of reads.",
+ limits:"Heuristic. Misses some alignments. Both are sensitive to parameter tuning.",
+ pitfall:"Minimizer parameters (k and w) affect sensitivity and speed. Small w gives more seeds (slower, more sensitive). Large w gives fewer (faster, less sensitive).",
+ question:"What is a minimizer?",
+ answer:"The smallest k-mer in each window of w consecutive k-mers. Only minimizers are indexed, reducing the number of seeds by a factor of about 2/(w+1).",
+ demo:"none",sample:"",refs:[
+  ["Li, Minimap2: pairwise alignment for nucleotide sequences, Bioinformatics 2018","https://doi.org/10.1093/bioinformatics/bty191"],
+  ["Li and Durbin, Fast and accurate short read alignment with Burrows-Wheeler transform, Bioinformatics 2009","https://doi.org/10.1093/bioinformatics/btp324"],
+  ["Roberts et al., Reducing storage requirements for biological sequence comparison, Bioinformatics 2004","https://doi.org/10.1093/bioinformatics/bth408"]]},
+{id:"mafft",title:"MAFFT multiple sequence alignment",level:5,kind:"Bioinformatics",status:"Concept lesson",
+ summary:"MAFFT aligns many sequences at once using fast Fourier transforms to find homologous regions. It balances speed and accuracy across many alignment modes.",
+ mental:"Align many sequences, not just two",
+ mentalText:"Multiple sequence alignment builds a table where each row is a sequence and each column is a homologous position. Gaps are inserted to align shared residues.",
+ steps:["Compute pairwise distances between all sequences.","Build a guide tree.","Progressively align sequences following the tree.","Optionally refine with iterative methods.","Output the final alignment."],
+ pseudo:"MAFFT (progressive alignment):\n  1. Compute pairwise distances with k-mer counting\n  2. Build a guide tree (UPGMA or NJ)\n  3. Progressive alignment:\n     For each internal node of the tree:\n       align the two child alignments with DP\n       (using profile-to-profile alignment)\n  4. Optional iterative refinement:\n     remove a sequence, realign it\n     accept if the score improves\n\nModes:\n  FFT-NS-1: fastest, less accurate\n  FFT-NS-2: default, good balance\n  L-INS-i: accurate, slow, uses local alignments\n  G-INS-i: accurate, uses global alignments\n\nTime: O(n^2 L) to O(n L^2) depending on mode",
+ uses:"Phylogenetics, protein family alignment, structural biology, primer design.",
+ strength:"Scales to thousands of sequences. Multiple modes for different accuracy needs.",
+ limits:"Progressive alignment is greedy. Guide tree errors propagate.",
+ pitfall:"The guide tree matters a lot. A poor tree gives poor alignments.",
+ question:"Why is MAFFT called FFT?",
+ answer:"It uses fast Fourier transforms to find homologous segments quickly by comparing the frequency content of sequence segments.",
+ demo:"none",sample:"",refs:[
+  ["Katoh et al., MAFFT: a novel method for rapid multiple sequence alignment based on fast Fourier transform, NAR 2002","https://doi.org/10.1093/nar/gkf436"],
+  ["Katoh and Standley, MAFFT multiple sequence alignment software version 7, MBE 2013","https://doi.org/10.1093/molbev/mst010"],
+  ["MAFFT documentation","https://mafft.cbrc.jp/alignment/software/"]]},
+{id:"debruijn",title:"De Bruijn graph assembly",level:5,kind:"Bioinformatics",status:"Concept lesson",
+ summary:"A de Bruijn graph represents a set of reads as a graph of k-mers. Genome assembly becomes finding a path (or set of paths) through the graph. Eulerian paths give near-optimal assemblies.",
+ mental:"Every k-mer is an edge; assemble by walking",
+ mentalText:"For a set of reads, break each read into k-mers. Each k-mer is an edge from its first k-1 characters to its last k-1 characters. A path through the graph spells a longer sequence.",
+ steps:["Choose k-mer length k.","For each read, extract all k-mers.","Add each k-mer as an edge between its prefix and suffix.","Compress chains of unique edges into unitigs.","Find paths that cover all edges (Eulerian path if possible).","Output contigs."],
+ pseudo:"de_bruijn(reads, k):\n  edges = set()\n  for read in reads:\n    for i in range(len(read) - k + 1):\n      edges.add(read[i:i+k])\n\n  # k-mer = edge from prefix to suffix\n  graph = defaultdict(list)\n  indeg = defaultdict(int)\n  for kmer in edges:\n    u = kmer[:-1]\n    v = kmer[1:]\n    graph[u].append(v)\n    indeg[v] += 1\n\n  # find Eulerian path\n  path = hierholzer(graph)\n  contig = path[0] + ''.join(p[-1] for p in path[1:])\n  return contig\n\nKey parameters:\n  k too small: many repeats, tangled graph\n  k too large: too few overlaps, disconnected graph",
+ uses:"Genome assembly (SPAdes, Velvet, ABySS, SOAPdenovo), transcript assembly, metagenomics.",
+ strength:"Handles repeats better than overlap-layout-consensus. Scales to large genomes.",
+ limits:"Sensitive to k. Repetitive genomes create tangles.",
+ pitfall:"Sequencing errors create false k-mers. Real assemblers filter low-frequency k-mers first.",
+ question:"Why choose a k-mer length?",
+ answer:"Larger k gives more specific k-mers and fewer false overlaps, but needs longer reads to cover the genome. Smaller k is more robust to errors but creates ambiguity in repeats.",
+ demo:"none",sample:"",refs:[
+  ["Pevzner, Tang, Waterman, An Eulerian path approach to DNA fragment assembly, PNAS 2001","https://doi.org/10.1073/pnas.171285098"],
+  ["Compeau, Pevzner, Tesler, How to apply de Bruijn graphs to genome assembly, Nature Biotechnology 2011","https://doi.org/10.1038/nbt.2023"],
+  ["Wikipedia, De Bruijn graph","https://en.wikipedia.org/wiki/De_Bruijn_graph"]]}
+];
+
+const LESSONS=RAW.map(mk);
+const byId=Object.fromEntries(LESSONS.map(x=>[x.id,x]));
+
+/* ============================================================
+   Code examples
+   ============================================================ */
+const CODE={
+ "naive":{python:`def naive_search(text, pattern):\n    n, m = len(text), len(pattern)\n    matches = []\n    for i in range(n - m + 1):\n        j = 0\n        while j < m and text[i + j] == pattern[j]:\n            j += 1\n        if j == m:\n            matches.append(i)\n    return matches\n\n\ntext = "ABABDABACDABABCABAB"\npattern = "ABABCABAB"\nprint(naive_search(text, pattern))\n`},
+ "kmp":{python:`def build_pi(pattern):\n    pi = [0] * len(pattern)\n    k = 0\n    for i in range(1, len(pattern)):\n        while k > 0 and pattern[i] != pattern[k]:\n            k = pi[k - 1]\n        if pattern[i] == pattern[k]:\n            k += 1\n        pi[i] = k\n    return pi\n\n\ndef kmp_search(text, pattern):\n    pi = build_pi(pattern)\n    matches = []\n    j = 0\n    for i, ch in enumerate(text):\n        while j > 0 and ch != pattern[j]:\n            j = pi[j - 1]\n        if ch == pattern[j]:\n            j += 1\n        if j == len(pattern):\n            matches.append(i - j + 1)\n            j = pi[j - 1]\n    return matches\n\n\nprint(kmp_search("ABABDABACDABABCABAB", "ABABCABAB"))\n`},
+ "z-array":{python:`def z_array(s):\n    n = len(s)\n    Z = [0] * n\n    Z[0] = n\n    l, r = 0, 0\n    for i in range(1, n):\n        if i < r:\n            Z[i] = min(r - i, Z[i - l])\n        while i + Z[i] < n and s[Z[i]] == s[i + Z[i]]:\n            Z[i] += 1\n        if i + Z[i] > r:\n            l, r = i, i + Z[i]\n    return Z\n\n\ndef z_search(text, pattern):\n    combined = pattern + "$" + text\n    Z = z_array(combined)\n    m = len(pattern)\n    return [i - m - 1 for i in range(m + 1, len(combined)) if Z[i] == m]\n\n\nprint(z_search("ABABDABACDABABCABAB", "ABABCABAB"))\n`},
+ "rabin-karp":{python:`def rabin_karp(text, pattern, base=256, mod=(1 << 61) - 1):\n    n, m = len(text), len(pattern)\n    if m > n: return []\n    # hash of pattern and first window\n    h_pat = 0\n    h_win = 0\n    for i in range(m):\n        h_pat = (h_pat * base + ord(pattern[i])) % mod\n        h_win = (h_win * base + ord(text[i])) % mod\n    high = pow(base, m - 1, mod)\n    matches = []\n    for i in range(n - m + 1):\n        if h_pat == h_win:\n            if text[i:i+m] == pattern:\n                matches.append(i)\n        if i + m < n:\n            h_win = ((h_win - ord(text[i]) * high) * base + ord(text[i + m])) % mod\n    return matches\n\n\nprint(rabin_karp("ABABDABACDABABCABAB", "ABABCABAB"))\n`},
+ "boyer-moore":{python:`def boyer_moore(text, pattern):\n    n, m = len(text), len(pattern)\n    if m == 0: return []\n    # bad character table\n    bad = {}\n    for i, c in enumerate(pattern):\n        bad[c] = i\n    matches = []\n    i = 0\n    while i <= n - m:\n        j = m - 1\n        while j >= 0 and text[i + j] == pattern[j]:\n            j -= 1\n        if j < 0:\n            matches.append(i)\n            i += m\n        else:\n            shift = j - bad.get(text[i + j], -1)\n            i += max(1, shift)\n    return matches\n\n\nprint(boyer_moore("ABABDABACDABABCABAB", "ABABCABAB"))\n`},
+ "horspool":{python:`def horspool(text, pattern):\n    n, m = len(text), len(pattern)\n    if m == 0: return []\n    shift = {}\n    for c in set(text) | set(pattern):\n        shift[c] = m\n    for i in range(m - 1):\n        shift[pattern[i]] = m - 1 - i\n    matches = []\n    i = 0\n    while i <= n - m:\n        j = m - 1\n        while j >= 0 and text[i + j] == pattern[j]:\n            j -= 1\n        if j < 0:\n            matches.append(i)\n        i += shift[text[i + m - 1]]\n    return matches\n\n\nprint(horspool("ABABDABACDABABCABAB", "ABABCABAB"))\n`},
+ "shift-or":{python:`def shift_or(text, pattern):\n    m = len(pattern)\n    mask = {}\n    for c in set(text) | set(pattern):\n        mask[c] = 0\n    for i, c in enumerate(pattern):\n        # bit i should be 0 if pattern[i] == c\n        for c2 in set(text) | set(pattern):\n            if c2 != c:\n                mask[c2] = mask.get(c2, 0) | (1 << i)\n            # careful: this is inverted, so we set 1 for mismatch\n    # Simpler: precompute via direct loop\n    mask = {}\n    for c in set(text) | set(pattern):\n        m_val = 0\n        for i, pc in enumerate(pattern):\n            if pc != c:\n                m_val |= (1 << i)\n        mask[c] = m_val\n    state = (1 << m) - 1\n    top = 1 << (m - 1)\n    matches = []\n    for i, c in enumerate(text):\n        state = ((state << 1) | mask.get(c, (1 << m) - 1)) & ((1 << m) - 1)\n        if state & top == 0:\n            matches.append(i - m + 1)\n    return matches\n\n\nprint(shift_or("ABABDABACDABABCABAB", "ABABCABAB"))\n`},
+ "aho-corasick":{python:`from collections import deque, defaultdict\n\n\nclass AhoCorasick:\n    def __init__(self):\n        self.next = [{}]\n        self.fail = [0]\n        self.out = [[]]\n\n    def add(self, word):\n        v = 0\n        for c in word:\n            if c not in self.next[v]:\n                self.next[v][c] = len(self.next)\n                self.next.append({})\n                self.fail.append(0)\n                self.out.append([])\n            v = self.next[v][c]\n        self.out[v].append(word)\n\n    def build(self):\n        q = deque()\n        for c, u in self.next[0].items():\n            self.fail[u] = 0\n            q.append(u)\n        while q:\n            v = q.popleft()\n            for c, u in self.next[v].items():\n                f = self.fail[v]\n                while f and c not in self.next[f]:\n                    f = self.fail[f]\n                self.fail[u] = self.next[f].get(c, 0)\n                self.out[u].extend(self.out[self.fail[u]])\n                q.append(u)\n\n    def search(self, text):\n        v = 0\n        matches = []\n        for i, c in enumerate(text):\n            while v and c not in self.next[v]:\n                v = self.fail[v]\n            v = self.next[v].get(c, 0)\n            for w in self.out[v]:\n                matches.append((i - len(w) + 1, w))\n        return matches\n\n\nac = AhoCorasick()\nfor w in ["he", "she", "his", "hers"]:\n    ac.add(w)\nac.build()\nprint(ac.search("ushers"))\n`},
+ "prefix-function":{python:`def prefix_function(s):\n    n = len(s)\n    pi = [0] * n\n    for i in range(1, n):\n        k = pi[i - 1]\n        while k > 0 and s[i] != s[k]:\n            k = pi[k - 1]\n        if s[i] == s[k]:\n            k += 1\n        pi[i] = k\n    return pi\n\n\ns = "ABABDABACDABABCABAB"\nprint("prefix function:", prefix_function(s))\n\n# smallest period\npi = prefix_function(s)\nprint("smallest period:", len(s) - pi[-1])\n`},
+ "booth":{python:`def booth(s):\n    n = len(s)\n    ss = s + s\n    f = [-1] * (2 * n)\n    k = 0\n    for j in range(1, 2 * n):\n        i = f[j - k - 1]\n        while i != -1 and ss[j] != ss[k + i + 1]:\n            if ss[j] < ss[k + i + 1]:\n                k = j - i - 1\n            i = f[i]\n        if i == -1 and ss[j] != ss[k + i + 1]:\n            if ss[j] < ss[k + i + 1]:\n                k = j\n            f[j - k] = -1\n        else:\n            f[j - k] = i + 1\n    return k\n\n\nfor s in ["baba", "banana", "aaaa", "abab"]:\n    k = booth(s)\n    print(f"{s}: least rotation starts at {k}: {s[k:] + s[:k]}")\n`},
+ "periodicity":{python:`def prefix_function(s):\n    pi = [0] * len(s)\n    for i in range(1, len(s)):\n        k = pi[i - 1]\n        while k > 0 and s[i] != s[k]:\n            k = pi[k - 1]\n        if s[i] == s[k]: k += 1\n        pi[i] = k\n    return pi\n\n\ndef smallest_period(s):\n    pi = prefix_function(s)\n    return len(s) - pi[-1]\n\n\ndef is_repetition(s):\n    p = smallest_period(s)\n    return len(s) % p == 0 and p < len(s)\n\n\nfor s in ["ababab", "abcabcabc", "abcdef", "aaaa"]:\n    p = smallest_period(s)\n    print(f"{s}: period={p}  repetition={is_repetition(s)}")\n`},
+ "levenshtein":{python:`def levenshtein(a, b):\n    n, m = len(a), len(b)\n    prev = list(range(m + 1))\n    for i in range(1, n + 1):\n        curr = [i] + [0] * m\n        for j in range(1, m + 1):\n            cost = 0 if a[i - 1] == b[j - 1] else 1\n            curr[j] = min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost)\n        prev = curr\n    return prev[m]\n\n\nprint(levenshtein("kitten", "sitting"))\nprint(levenshtein("saturday", "sunday"))\n`},
+ "damerau":{python:`def damerau(a, b):\n    n, m = len(a), len(b)\n    D = [[0] * (m + 1) for _ in range(n + 1)]\n    for i in range(n + 1): D[i][0] = i\n    for j in range(m + 1): D[0][j] = j\n    for i in range(1, n + 1):\n        for j in range(1, m + 1):\n            cost = 0 if a[i - 1] == b[j - 1] else 1\n            D[i][j] = min(\n                D[i - 1][j] + 1,\n                D[i][j - 1] + 1,\n                D[i - 1][j - 1] + cost,\n            )\n            if (i > 1 and j > 1 and\n                a[i - 1] == b[j - 2] and a[i - 2] == b[j - 1]):\n                D[i][j] = min(D[i][j], D[i - 2][j - 2] + 1)\n    return D[n][m]\n\n\nprint(damerau("ca", "abc"))\nprint(damerau("ab", "ba"))\n`},
+ "jaro-winkler":{python:`def jaro(s1, s2):\n    if s1 == s2: return 1.0\n    n1, n2 = len(s1), len(s2)\n    if n1 == 0 or n2 == 0: return 0.0\n    window = max(n1, n2) // 2 - 1\n    m1 = [False] * n1\n    m2 = [False] * n2\n    matches = 0\n    for i, c in enumerate(s1):\n        for j in range(max(0, i - window), min(n2, i + window + 1)):\n            if not m2[j] and s2[j] == c:\n                m1[i] = m2[j] = True\n                matches += 1\n                break\n    if matches == 0: return 0.0\n    t = 0\n    k = 0\n    for i in range(n1):\n        if m1[i]:\n            while not m2[k]: k += 1\n            if s1[i] != s2[k]: t += 1\n            k += 1\n    t //= 2\n    return (matches / n1 + matches / n2 + (matches - t) / matches) / 3\n\n\ndef jaro_winkler(s1, s2, p=0.1):\n    j = jaro(s1, s2)\n    l = 0\n    for c1, c2 in zip(s1, s2):\n        if c1 == c2 and l < 4: l += 1\n        else: break\n    return j + l * p * (1 - j)\n\n\nprint("Jaro MARTHA/MARHTA:", jaro("MARTHA", "MARHTA"))\nprint("JW   MARTHA/MARHTA:", jaro_winkler("MARTHA", "MARHTA"))\n`},
+ "suffix-array":{python:`def build_suffix_array(s):\n    n = len(s)\n    # naive: O(n^2 log n)\n    return sorted(range(n), key=lambda i: s[i:])\n\n\ndef search_suffix_array(s, sa, pattern):\n    import bisect\n    n = len(s)\n    m = len(pattern)\n    lo, hi = 0, n\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if s[sa[mid]:sa[mid]+m] < pattern:\n            lo = mid + 1\n        else:\n            hi = mid\n    if lo < n and s[sa[lo]:sa[lo]+m] == pattern:\n        return sa[lo]\n    return -1\n\n\ns = "banana"\nsa = build_suffix_array(s)\nprint("suffix array:", sa)\nprint("search 'ana':", search_suffix_array(s, sa, "ana"))\n`},
+ "kasai":{python:`def build_suffix_array(s):\n    n = len(s)\n    return sorted(range(n), key=lambda i: s[i:])\n\n\ndef kasai(s, SA):\n    n = len(s)\n    rank = [0] * n\n    for i, pos in enumerate(SA):\n        rank[pos] = i\n    h = 0\n    LCP = [0] * n\n    for i in range(n):\n        if rank[i] > 0:\n            j = SA[rank[i] - 1]\n            while i + h < n and j + h < n and s[i + h] == s[j + h]:\n                h += 1\n            LCP[rank[i]] = h\n            if h > 0: h -= 1\n    return LCP\n\n\ns = "banana"\nsa = build_suffix_array(s)\nlcp = kasai(s, sa)\nfor i, pos in enumerate(sa):\n    print(f"  SA[{i}] = {pos:>2}  suffix='{s[pos:]}'  LCP={lcp[i]}")\n\n# number of distinct substrings\nn = len(s)\ndistinct = n * (n + 1) // 2 - sum(lcp)\nprint("distinct substrings:", distinct)\n`},
+ "bwt":{python:`def bwt(s):\n    s = s + "$"\n    n = len(s)\n    rotations = [s[i:] + s[:i] for i in range(n)]\n    rotations.sort()\n    return "".join(r[-1] for r in rotations), rotations\n\n\ndef inverse_bwt(bwt_str):\n    n = len(bwt_str)\n    table = [""] * n\n    for _ in range(n):\n        table = sorted(bwt_str[i] + table[i] for i in range(n))\n    for row in table:\n        if row.endswith("$"):\n            return row[:-1]\n\n\ns = "banana"\nbwt_str, rotations = bwt(s)\nprint("rotations (sorted):")\nfor r in rotations:\n    print("  ", r)\nprint("BWT:", bwt_str)\nprint("inverse:", inverse_bwt(bwt_str))\n`},
+ "lz-parsing":{python:`def lz77_encode(text, window=20):\n    n = len(text)\n    i = 0\n    output = []\n    while i < n:\n        best_len = 0\n        best_dist = 0\n        start = max(0, i - window)\n        for j in range(start, i):\n            length = 0\n            while (i + length < n and text[j + length] == text[i + length]):\n                length += 1\n            if length > best_len:\n                best_len = length\n                best_dist = i - j\n        if best_len >= 3:\n            output.append((best_dist, best_len, text[i + best_len] if i + best_len < n else ""))\n            i += best_len + (1 if i + best_len < n else 0)\n        else:\n            output.append((0, 0, text[i]))\n            i += 1\n    return output\n\n\ntext = "abracadabra abracadabra"\nprint("LZ77:", lz77_encode(text))\n`},
+ "shunting-yard":{python:`def shunting_yard(tokens):\n    prec = {"+": 1, "-": 1, "*": 2, "/": 2}\n    output = []\n    stack = []\n    for tok in tokens:\n        if tok in prec:\n            while stack and stack[-1] in prec and prec[stack[-1]] >= prec[tok]:\n                output.append(stack.pop())\n            stack.append(tok)\n        elif tok == "(":\n            stack.append(tok)\n        elif tok == ")":\n            while stack[-1] != "(":\n                output.append(stack.pop())\n            stack.pop()\n        else:\n            output.append(tok)\n    while stack:\n        output.append(stack.pop())\n    return output\n\n\ntokens = ["3", "+", "4", "*", "2", "/", "(", "1", "-", "5", ")"]\nprint("infix :", " ".join(tokens))\nprint("postfix:", " ".join(shunting_yard(tokens)))\n`},
+ "dfa-min":{python:`# Simple DFA minimization by partition refinement\n# States: 0-4, alphabet: {a, b}\n\nDFA = {\n    "states": {0, 1, 2, 3, 4},\n    "alphabet": {"a", "b"},\n    "delta": {\n        (0, "a"): 1, (0, "b"): 2,\n        (1, "a"): 0, (1, "b"): 3,\n        (2, "a"): 4, (2, "b"): 0,\n        (3, "a"): 3, (3, "b"): 3,\n        (4, "a"): 4, (4, "b"): 4,\n    },\n    "start": 0,\n    "accept": {3, 4},\n}\n\n\ndef minimize(dfa):\n    P = [dfa["accept"], dfa["states"] - dfa["accept"]]\n    P = [b for b in P if b]\n    changed = True\n    while changed:\n        changed = False\n        new_P = []\n        for block in P:\n            # split by where each symbol goes\n            groups = {}\n            for state in block:\n                sig = tuple(next(b for b in P if dfa[\"delta\"].get((state, c)) in b) for c in dfa[\"alphabet\"])\n                # simpler: signature by destination block id\n                sig = tuple(next(i for i, b in enumerate(P) if dfa[\"delta\"].get((state, c)) in b) for c in dfa[\"alphabet\"])\n                groups.setdefault(sig, set()).add(state)\n            if len(groups) > 1:\n                changed = True\n            new_P.extend(groups.values())\n        P = new_P\n    return P\n\n\nprint("Minimized partitions:")\nfor block in minimize(DFA):\n    print("  ", block)\n`},
+ "unicode-normalize":{python:`import unicodedata\n\n\ndef show(s, name):\n    codes = " ".join(f"U+{ord(c):04X}" for c in s)\n    print(f"{name}: len={len(s)}  codes={codes}")\n\n\nfor s in ["café", "cafe\\u0301", "ﬁle", "file", "①", "1"]:\n    show(s, repr(s))\n    print("  NFC :", repr(unicodedata.normalize("NFC", s)))\n    print("  NFD :", repr(unicodedata.normalize("NFD", s)))\n    print("  NFKC:", repr(unicodedata.normalize("NFKC", s)))\n    print()\n`},
+ "unicode-segment":{python:`import unicodedata\n\n\ndef grapheme_info(s):\n    print(f"String: {s!r}")\n    print(f"  Python len (code points): {len(s)}")\n    print(f"  UTF-8 bytes: {len(s.encode('utf-8'))}")\n    print(f"  UTF-16 units: {len(s.encode('utf-16-le')) // 2}")\n    # grapheme count needs regex or library\n    try:\n        import regex\n        print(f"  Graphemes: {len(regex.findall(r'\\\\X', s))}")\n    except ImportError:\n        print("  Graphemes: (install 'regex' for grapheme counting)")\n\n\nfor s in ["café", "cafe\\u0301", "👨‍👩‍👧", "🇺🇸"]:\n    grapheme_info(s)\n    print()\n`},
+ "tokenize":{python:`import re\n\n\ndef tokenize(text):\n    token_spec = [\n        ("NUMBER", r"\\d+"),\n        ("ID", r"[A-Za-z_][A-Za-z0-9_]*"),\n        ("OP", r"[+\\-*/=()]"),\n        ("SKIP", r"\\s+"),\n    ]\n    tok_regex = "|".join(f"(?P<{name}>{pat})" for name, pat in token_spec)\n    tokens = []\n    for m in re.finditer(tok_regex, text):\n        kind = m.lastgroup\n        if kind != "SKIP":\n            tokens.append((kind, m.group()))\n    return tokens\n\n\ntext = "x = 3 + 4 * (y - 1)"\nfor kind, val in tokenize(text):\n    print(f"  {kind:>6}  {val}")\n`},
+ "nw":{python:`def needleman_wunsch(a, b, match=1, mismatch=-1, gap=-1):\n    n, m = len(a), len(b)\n    D = [[0] * (m + 1) for _ in range(n + 1)]\n    for i in range(n + 1): D[i][0] = i * gap\n    for j in range(m + 1): D[0][j] = j * gap\n    for i in range(1, n + 1):\n        for j in range(1, m + 1):\n            s = match if a[i-1] == b[j-1] else mismatch\n            D[i][j] = max(\n                D[i-1][j-1] + s,\n                D[i-1][j] + gap,\n                D[i][j-1] + gap,\n            )\n    # traceback\n    align_a, align_b = [], []\n    i, j = n, m\n    while i > 0 and j > 0:\n        s = match if a[i-1] == b[j-1] else mismatch\n        if D[i][j] == D[i-1][j-1] + s:\n            align_a.append(a[i-1]); align_b.append(b[j-1]); i -= 1; j -= 1\n        elif D[i][j] == D[i-1][j] + gap:\n            align_a.append(a[i-1]); align_b.append("-"); i -= 1\n        else:\n            align_a.append("-"); align_b.append(b[j-1]); j -= 1\n    while i > 0: align_a.append(a[i-1]); align_b.append("-"); i -= 1\n    while j > 0: align_a.append("-"); align_b.append(b[j-1]); j -= 1\n    return D[n][m], "".join(reversed(align_a)), "".join(reversed(align_b))\n\n\nscore, x, y = needleman_wunsch("GATTACA", "GCATGCU")\nprint("Score:", score)\nprint("  ", x)\nprint("  ", y)\n`},
+ "sw":{python:`def smith_waterman(a, b, match=2, mismatch=-1, gap=-1):\n    n, m = len(a), len(b)\n    D = [[0] * (m + 1) for _ in range(n + 1)]\n    best = 0\n    best_pos = (0, 0)\n    for i in range(1, n + 1):\n        for j in range(1, m + 1):\n            s = match if a[i-1] == b[j-1] else mismatch\n            D[i][j] = max(\n                0,\n                D[i-1][j-1] + s,\n                D[i-1][j] + gap,\n                D[i][j-1] + gap,\n            )\n            if D[i][j] > best:\n                best = D[i][j]\n                best_pos = (i, j)\n    return best, best_pos\n\n\nscore, pos = smith_waterman("GATTACA", "GCATGCU")\nprint("Best local score:", score, "at", pos)\n`},
+};
+
+/* ============================================================
+   Utilities
+   ============================================================ */
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function highlightMatches(text, matches, m){
+ // matches are 0-indexed start positions
+ const set=new Set();
+ for(const p of matches)for(let i=0;i<m;i++)set.add(p+i);
+ let out='';
+ for(let i=0;i<text.length;i++){
+  const ch=escapeHtml(text[i]);
+  out+=set.has(i)?`<span class="match-hl">${ch}</span>`:ch;
+ }
+ return out;
+}
+
+/* ============================================================
+   Labs
+   ============================================================ */
+function parseTextPattern(text){
+ const blocks=text.trim().split(/\n\s*\n/);
+ if(blocks.length>=2)return{text:blocks[0].trim(),pattern:blocks[1].trim()};
+ const lines=text.trim().split(/\n/);
+ if(lines.length>=2)return{text:lines[0].trim(),pattern:lines.slice(1).join('\n').trim()};
+ throw Error('Enter text on the first line, pattern on the second line.');
+}
+
+function demoNaive(text){
+ const{text:txt,pattern}=parseTextPattern(text);
+ const n=txt.length,m=pattern.length;
+ const matches=[];
+ for(let i=0;i<=n-m;i++){
+  let j=0;
+  while(j<m&&txt[i+j]===pattern[j])j++;
+  if(j===m)matches.push(i);
+ }
+ return {
+  encoded:`Text:    "${txt}"\nPattern: "${pattern}"\n\nMatches at positions: [${matches.join(', ')}]\nCount: ${matches.length}`,
+  html:highlightMatches(txt,matches,m),
+  decoded:`Naive search tries the pattern at every start position. O(n m) worst case. Fine for short texts and patterns.`
+ };
+}
+function demoKmp(text){
+ const{text:txt,pattern}=parseTextPattern(text);
+ const m=pattern.length;
+ const pi=new Array(m).fill(0);
+ let k=0;
+ for(let i=1;i<m;i++){
+  while(k>0&&pattern[i]!==pattern[k])k=pi[k-1];
+  if(pattern[i]===pattern[k])k++;
+  pi[i]=k;
+ }
+ const matches=[];
+ let j=0;
+ for(let i=0;i<txt.length;i++){
+  while(j>0&&txt[i]!==pattern[j])j=pi[j-1];
+  if(txt[i]===pattern[j])j++;
+  if(j===m){matches.push(i-j+1);j=pi[j-1]}
+ }
+ return {
+  encoded:`Text:    "${txt}"\nPattern: "${pattern}"\n\nPrefix function: [${pi.join(', ')}]\nMatches at: [${matches.join(', ')}]`,
+  html:highlightMatches(txt,matches,m),
+  decoded:`KMP uses the prefix function to skip redundant comparisons. On a mismatch after a partial match, it shifts by the longest proper prefix that is also a suffix. O(n + m).`
+ };
+}
+function demoZ(text){
+ const{text:txt,pattern}=parseTextPattern(text);
+ const combined=pattern+'$'+txt;
+ const n=combined.length;
+ const Z=new Array(n).fill(0);
+ Z[0]=n;
+ let l=0,r=0;
+ for(let i=1;i<n;i++){
+  if(i<r)Z[i]=Math.min(r-i,Z[i-l]);
+  while(i+Z[i]<n&&combined[Z[i]]===combined[i+Z[i]])Z[i]++;
+  if(i+Z[i]>r){l=i;r=i+Z[i]}
+ }
+ const matches=[];
+ for(let i=pattern.length+1;i<n;i++)if(Z[i]===pattern.length)matches.push(i-pattern.length-1);
+ return {
+  encoded:`Combined: "${combined}"\nZ-array:  [${Z.join(', ')}]\nMatches at: [${matches.join(', ')}]`,
+  html:highlightMatches(txt,matches,pattern.length),
+  decoded:`The Z-array gives the longest prefix match at each position. Concatenating pattern + separator + text lets you find every match in linear time.`
+ };
+}
+function demoRabinKarp(text){
+ const{text:txt,pattern}=parseTextPattern(text);
+ const n=txt.length,m=pattern.length;
+ if(m>n)return{encoded:'Pattern longer than text.',decoded:'No matches possible.'};
+ const base=256;
+ const mod=1000000007;
+ function hash(s,start,len){
+  let h=0;
+  for(let i=0;i<len;i++)h=(h*base+s.charCodeAt(start+i))%mod;
+  return h;
+ }
+ const hp=hash(pattern,0,m);
+ let hw=hash(txt,0,m);
+ const high=Math.pow(base,m-1)%mod;
+ const matches=[];
+ let collisions=0;
+ for(let i=0;i<=n-m;i++){
+  if(hp===hw){
+   let ok=true;
+   for(let j=0;j<m;j++)if(txt[i+j]!==pattern[j]){ok=false;break}
+   if(ok)matches.push(i);
+   else collisions++;
+  }
+  if(i+m<n){
+   hw=((hw-txt.charCodeAt(i)*high%mod+mod)%mod*base+txt.charCodeAt(i+m))%mod;
+  }
+ }
+ return {
+  encoded:`Text:    "${txt}"\nPattern: "${pattern}"\nPattern hash: ${hp}\nMatches at: [${matches.join(', ')}]\nHash collisions verified: ${collisions}`,
+  html:highlightMatches(txt,matches,m),
+  decoded:`Rabin-Karp hashes the pattern and every window. A rolling hash makes each window update O(1). Hash matches are verified character by character. Average O(n + m).`
+ };
+}
+function demoBoyerMoore(text){
+ const{text:txt,pattern}=parseTextPattern(text);
+ const n=txt.length,m=pattern.length;
+ const bad={};
+ for(let i=0;i<m;i++)bad[pattern[i]]=i;
+ const matches=[];
+ let i=0,comparisons=0;
+ while(i<=n-m){
+  let j=m-1;
+  while(j>=0){comparisons++;if(txt[i+j]!==pattern[j])break;j--}
+  if(j<0){matches.push(i);i+=m}
+  else{
+   const shift=j-(bad[txt[i+j]]??-1);
+   i+=Math.max(1,shift);
+  }
+ }
+ return {
+  encoded:`Text:    "${txt}"\nPattern: "${pattern}"\nMatches at: [${matches.join(', ')}]\nComparisons used: ${comparisons}`,
+  html:highlightMatches(txt,matches,m),
+  decoded:`Boyer-Moore compares right to left and uses the bad-character table to shift. Often sublinear. This demo shows only the bad-character rule; the full algorithm adds the good suffix table.`
+ };
+}
+function demoHorspool(text){
+ const{text:txt,pattern}=parseTextPattern(text);
+ const n=txt.length,m=pattern.length;
+ const shift={};
+ const alphabet=new Set([...txt,...pattern]);
+ for(const c of alphabet)shift[c]=m;
+ for(let i=0;i<m-1;i++)shift[pattern[i]]=m-1-i;
+ const matches=[];
+ let i=0;
+ while(i<=n-m){
+  let j=m-1;
+  while(j>=0&&txt[i+j]===pattern[j])j--;
+  if(j<0)matches.push(i);
+  i+=shift[txt[i+m-1]];
+ }
+ return {
+  encoded:`Text:    "${txt}"\nPattern: "${pattern}"\nShift table: ${JSON.stringify(shift)}\nMatches at: [${matches.join(', ')}]`,
+  html:highlightMatches(txt,matches,m),
+  decoded:`Horspool uses only the last character of the window for the shift. Simpler than Boyer-Moore, almost as fast on typical text.`
+ };
+}
+function demoShiftOr(text){
+ const{text:txt,pattern}=parseTextPattern(text);
+ const m=pattern.length;
+ if(m>30)throw Error('Pattern must be at most 30 characters for this demo.');
+ const mask={};
+ const alphabet=new Set([...txt,...pattern]);
+ for(const c of alphabet){
+  let v=0;
+  for(let i=0;i<m;i++)if(pattern[i]!==c)v|=(1<<i);
+  mask[c]=v;
+ }
+ let state=(1<<m)-1;
+ const top=1<<(m-1);
+ const matches=[];
+ for(let i=0;i<txt.length;i++){
+  state=((state<<1)|(mask[txt[i]]??(1<<m)-1))&((1<<m)-1);
+  if((state&top)===0)matches.push(i-m+1);
+ }
+ return {
+  encoded:`Text:    "${txt}"\nPattern: "${pattern}"\nMatches at: [${matches.join(', ')}]\nState size: ${m} bits`,
+  html:highlightMatches(txt,matches,m),
+  decoded:`Shift-Or packs the pattern into a bit-vector. Each text character updates the state with a shift and an OR. If the top bit is 0, a match ends at the current position.`
+ };
+}
+function demoAhoCorasick(text){
+ const patterns=text.trim().split(/\n/).filter(Boolean);
+ if(!patterns.length)throw Error('Enter one pattern per line.');
+ // Build trie
+ const next=[{}],fail=[0],out=[[]];
+ for(const w of patterns){
+  let v=0;
+  for(const ch of w){
+   if(next[v][ch]===undefined){next[v][ch]=next.length;next.push({});fail.push(0);out.push([])}
+   v=next[v][ch];
+  }
+  out[v].push(w);
+ }
+ // Build fail links
+ const queue=[];
+ for(const ch in next[0]){fail[next[0][ch]]=0;queue.push(next[0][ch])}
+ while(queue.length){
+  const v=queue.shift();
+  for(const ch in next[v]){
+   const u=next[v][ch];
+   let f=fail[v];
+   while(f&&next[f][ch]===undefined)f=fail[f];
+   fail[u]=next[f][ch]!==undefined&&next[f][ch]!==u?next[f][ch]:0;
+   out[u]=out[u].concat(out[fail[u]]);
+   queue.push(u);
+  }
+ }
+ // Search
+ const haystack="ushers"; // default
+ const text_=haystack;
+ const matches=[];
+ let state=0;
+ for(let i=0;i<text_.length;i++){
+  const c=text_[i];
+  while(state&&next[state][c]===undefined)state=fail[state];
+  state=next[state][c]??0;
+  for(const w of out[state])matches.push(`"${w}" at ${i-w.length+1}`);
+ }
+ return {
+  encoded:`Patterns: ${patterns.join(', ')}\nTest text: "${text_}"\n\nMatches:\n${matches.map(m=>'  '+m).join('\n')||'  (none)'}\n\nTrie size: ${next.length} states`,
+  decoded:`Aho-Corasick builds one automaton for all patterns. Search is O(text + matches). Fail links jump to the longest proper suffix that is also a prefix of some pattern.`
+ };
+}
+function demoPrefixFunction(text){
+ const s=text.trim().split(/\n/)[0]||'abab';
+ const n=s.length;
+ const pi=new Array(n).fill(0);
+ for(let i=1;i<n;i++){
+  let k=pi[i-1];
+  while(k>0&&s[i]!==s[k])k=pi[k-1];
+  if(s[i]===s[k])k++;
+  pi[i]=k;
+ }
+ const rows=s.split('').map((c,i)=>`  i=${i}  s[i]=${c}  pi[i]=${pi[i]}`);
+ const period=n-pi[n-1];
+ return {
+  encoded:`String: "${s}"\n\n${rows.join('\n')}\n\nLongest border of whole string: ${pi[n-1]}\nSmallest period: ${period}`,
+  decoded:`The prefix function records the longest proper prefix that is also a suffix at each position. The smallest period of the string is n minus the last value.`
+ };
+}
+function demoBooth(text){
+ const s=text.trim().split(/\n/)[0]||'baba';
+ const n=s.length;
+ const ss=s+s;
+ const f=new Array(2*n).fill(-1);
+ let k=0;
+ for(let j=1;j<2*n;j++){
+  let i=f[j-k-1];
+  while(i!==-1&&ss[j]!==ss[k+i+1]){
+   if(ss[j]<ss[k+i+1])k=j-i-1;
+   i=f[i];
+  }
+  if(i===-1&&ss[j]!==ss[k+i+1]){
+   if(ss[j]<ss[k+i+1])k=j;
+   f[j-k]=-1;
+  } else {
+   f[j-k]=i+1;
+  }
+ }
+ const rotations=[];
+ for(let i=0;i<n;i++)rotations.push({i,r:s.slice(i)+s.slice(0,i)});
+ rotations.sort((a,b)=>a.r.localeCompare(b.r));
+ return {
+  encoded:`String: "${s}"\n\nAll rotations (sorted):\n${rotations.map(({i,r})=>`  ${r}  (start ${i})`).join('\n')}\n\nLeast rotation: "${rotations[0].r}" starting at index ${rotations[0].i}\nBooth reports start index ${k}`,
+  decoded:`Booth's algorithm finds the least lexicographic rotation in O(n) using a modified prefix function. The result matches the brute-force answer above.`
+ };
+}
+function demoPeriodicity(text){
+ const s=text.trim().split(/\n/)[0]||'ababab';
+ const n=s.length;
+ const pi=new Array(n).fill(0);
+ for(let i=1;i<n;i++){
+  let k=pi[i-1];
+  while(k>0&&s[i]!==s[k])k=pi[k-1];
+  if(s[i]===s[k])k++;
+  pi[i]=k;
+ }
+ const period=n-pi[n-1];
+ const isRep=n%period===0&&period<n;
+ const block=s.slice(0,period);
+ const expectedReps=isRep?block.repeat(n/period):'—';
+ return {
+  encoded:`String: "${s}"\nLength: ${n}\nSmallest period: ${period}\nBlock: "${block}"\nRepetition: ${isRep?'yes':'no'}\nExpected: "${expectedReps}"\nReconstruction: "${isRep?block.repeat(n/period):'(not periodic)'}"`,
+  decoded:`The smallest period p is n - pi[n-1]. If p divides n, the string is a repetition of the block of length p.`
+ };
+}
+function demoLevenshtein(text){
+ const blocks=text.trim().split(/\n\s*\n/);
+ const lines=text.trim().split(/\n/);
+ const a=lines[0]||'',b=lines[1]||'';
+ if(!a||!b)throw Error('Enter two strings on separate lines.');
+ const n=a.length,m=b.length;
+ const D=Array.from({length:n+1},()=>new Array(m+1).fill(0));
+ for(let i=0;i<=n;i++)D[i][0]=i;
+ for(let j=0;j<=m;j++)D[0][j]=j;
+ for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){
+  const cost=a[i-1]===b[j-1]?0:1;
+  D[i][j]=Math.min(D[i-1][j]+1,D[i][j-1]+1,D[i-1][j-1]+cost);
+ }
+ const rows=[];
+ for(let i=0;i<=n;i++)rows.push('  '+D[i].map(x=>String(x).padStart(3)).join(''));
+ return {
+  encoded:`a = "${a}"\nb = "${b}"\n\nDP table (rows=a, cols=b):\n${rows.join('\n')}\n\nLevenshtein distance: ${D[n][m]}`,
+  decoded:`Each cell is the minimum of delete, insert and substitute. The distance at the bottom right is the edit distance between the two full strings.`
+ };
+}
+function demoDamerau(text){
+ const lines=text.trim().split(/\n/);
+ const a=lines[0]||'ca',b=lines[1]||'abc';
+ const n=a.length,m=b.length;
+ const D=Array.from({length:n+1},()=>new Array(m+1).fill(0));
+ for(let i=0;i<=n;i++)D[i][0]=i;
+ for(let j=0;j<=m;j++)D[0][j]=j;
+ for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){
+  const cost=a[i-1]===b[j-1]?0:1;
+  D[i][j]=Math.min(D[i-1][j]+1,D[i][j-1]+1,D[i-1][j-1]+cost);
+  if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1]){
+   D[i][j]=Math.min(D[i][j],D[i-2][j-2]+1);
+  }
+ }
+ return {
+  encoded:`a = "${a}"\nb = "${b}"\n\nDamerau-Levenshtein distance: ${D[n][m]}\n\nCompare with plain Levenshtein (no transpositions):\n  (the difference shows the transposition bonus)`,
+  decoded:`Damerau-Levenshtein adds a transposition operation of cost 1. This makes 'ab' and 'ba' distance 1 instead of 2.`
+ };
+}
+function demoJaroWinkler(text){
+ const lines=text.trim().split(/\n/);
+ const pairs=[];
+ for(let i=0;i+1<lines.length;i+=2)pairs.push([lines[i].trim(),lines[i+1].trim()]);
+ function jaro(s1,s2){
+  if(s1===s2)return 1;
+  const n1=s1.length,n2=s2.length;
+  if(!n1||!n2)return 0;
+  const window=Math.max(n1,n2)/2-1;
+  const m1=new Array(n1).fill(false),m2=new Array(n2).fill(false);
+  let matches=0;
+  for(let i=0;i<n1;i++)for(let j=Math.max(0,Math.floor(i-window));j<Math.min(n2,Math.floor(i+window)+1);j++){
+   if(!m2[j]&&s2[j]===s1[i]){m1[i]=m2[j]=true;matches++;break}
+  }
+  if(!matches)return 0;
+  let t=0,k=0;
+  for(let i=0;i<n1;i++)if(m1[i]){
+   while(!m2[k])k++;
+   if(s1[i]!==s2[k])t++;
+   k++;
+  }
+  t=Math.floor(t/2);
+  return (matches/n1+matches/n2+(matches-t)/matches)/3;
+ }
+ function jw(s1,s2){const j=jaro(s1,s2);let l=0;for(let i=0;i<Math.min(4,Math.min(s1.length,s2.length));i++){if(s1[i]===s2[i])l++;else break}return j+l*0.1*(1-j)}
+ return {
+  encoded:pairs.map(([a,b])=>`"${a}" vs "${b}"\n  Jaro       = ${jaro(a,b).toFixed(4)}\n  Jaro-Winkler = ${jw(a,b).toFixed(4)}`).join('\n\n'),
+  decoded:`Jaro similarity counts matching characters within a small window. Jaro-Winkler adds a bonus for the common prefix. Values close to 1 mean high similarity. Used for record linkage.`
+ };
+}
+function demoSuffixArray(text){
+ const s=text.trim().split(/\n/)[0]||'banana';
+ const n=s.length;
+ const sa=Array.from({length:n},(_,i)=>i).sort((a,b)=>s.slice(a).localeCompare(s.slice(b)));
+ const rows=sa.map((i,idx)=>`  SA[${idx}] = ${String(i).padStart(3)}   suffix="${s.slice(i)}"`);
+ return {
+  encoded:`String: "${s}"\nLength: ${n}\n\n${rows.join('\n')}\n\nSuffix array: [${sa.join(', ')}]`,
+  decoded:`The suffix array lists the start positions of all suffixes in sorted order. It uses O(n) integers. Search is O(m log n) with binary search.`
+ };
+}
+function demoKasai(text){
+ const s=text.trim().split(/\n/)[0]||'banana';
+ const n=s.length;
+ const sa=Array.from({length:n},(_,i)=>i).sort((a,b)=>s.slice(a).localeCompare(s.slice(b)));
+ const rank=new Array(n);
+ sa.forEach((p,i)=>rank[p]=i);
+ const lcp=new Array(n).fill(0);
+ let h=0;
+ for(let i=0;i<n;i++){
+  if(rank[i]>0){
+   const j=sa[rank[i]-1];
+   while(i+h<n&&j+h<n&&s[i+h]===s[j+h])h++;
+   lcp[rank[i]]=h;
+   if(h>0)h--;
+  }
+ }
+ const rows=sa.map((pos,i)=>`  SA[${i}]=${String(pos).padStart(3)}  LCP[${i}]=${String(lcp[i]).padStart(2)}  suffix="${s.slice(pos)}"`);
+ const distinct=n*(n+1)/2-lcp.reduce((a,b)=>a+b,0);
+ return {
+  encoded:`String: "${s}"\n\n${rows.join('\n')}\n\nDistinct substrings: n(n+1)/2 - sum(LCP) = ${n*(n+1)/2} - ${lcp.reduce((a,b)=>a+b,0)} = ${distinct}`,
+  decoded:`The LCP array stores the longest common prefix of each suffix and its predecessor in sorted order. Kasai's algorithm computes it in O(n). Used for counting distinct substrings and finding repeats.`
+ };
+}
+function demoBwt(text){
+ const s=text.trim().split(/\n/)[0]||'banana';
+ const s2=s+'$';
+ const n=s2.length;
+ const rotations=[];
+ for(let i=0;i<n;i++)rotations.push({r:s2.slice(i)+s2.slice(0,i),i});
+ rotations.sort((a,b)=>a.r.localeCompare(b.r));
+ const bwt=rotations.map(x=>x.r[n-1]).join('');
+ // inverse
+ const table=[];for(let i=0;i<n;i++)table.push('');
+ for(let step=0;step<n;step++){
+  const next=[];
+  for(let i=0;i<n;i++)next.push(bwt[i]+table[i]);
+  next.sort();
+  table.length=0;table.push(...next);
+ }
+ const original=table.find(row=>row.endsWith('$'))?.slice(0,-1)||'';
+ return {
+  encoded:`String: "${s}"\n\nSorted rotations:\n${rotations.map(x=>`  ${x.r}`).join('\n')}\n\nBWT: "${bwt}"\nInverse: "${original}"\nRound trip: ${original===s?'OK':'FAILED'}`,
+  decoded:`The BWT sorts all rotations and takes the last column. The result clusters similar characters, making it more compressible. The LF mapping reconstructs the original.`
+ };
+}
+function demoLzParsing(text){
+ const input=text.trim().split(/\n/)[0]||'abracadabra abracadabra';
+ const n=input.length;
+ const window=20;
+ const output=[];
+ let i=0;
+ while(i<n){
+  let bestLen=0,bestDist=0;
+  const start=Math.max(0,i-window);
+  for(let j=start;j<i;j++){
+   let len=0;
+   while(i+len<n&&input[j+len]===input[i+len])len++;
+   if(len>bestLen){bestLen=len;bestDist=i-j}
+  }
+  if(bestLen>=3){
+   output.push(`(${bestDist}, ${bestLen})`);
+   i+=bestLen;
+  } else {
+   output.push(`literal '${input[i]}'`);
+   i++;
+  }
+ }
+ return {
+  encoded:`Input: "${input}"\n\nLZ77 tokens:\n${output.map(x=>'  '+x).join('\n')}\n\nTokens: ${output.length}, characters: ${input.length}`,
+  decoded:`LZ77 replaces repeated substrings with (distance, length) pairs. Matching is done against a sliding window of recent text.`
+ };
+}
+function demoShuntingYard(text){
+ const tokens=text.trim().split(/\s+/).filter(Boolean);
+ const prec={'+':1,'-':1,'*':2,'/':2};
+ const output=[],stack=[];
+ for(const tok of tokens){
+  if(tok in prec){
+   while(stack.length&&stack[stack.length-1] in prec&&prec[stack[stack.length-1]]>=prec[tok]){
+    output.push(stack.pop());
+   }
+   stack.push(tok);
+  } else if(tok==='('){stack.push(tok)}
+  else if(tok===')'){
+   while(stack.length&&stack[stack.length-1]!=='(')output.push(stack.pop());
+   stack.pop();
+  } else output.push(tok);
+ }
+ while(stack.length)output.push(stack.pop());
+ return {
+  encoded:`Infix   : ${tokens.join(' ')}\nPostfix : ${output.join(' ')}`,
+  decoded:`Shunting-yard converts infix to postfix (Reverse Polish Notation). Operators are moved to the output when a lower-precedence operator arrives. Parentheses control the stack.`
+ };
+}
+function demoDfaMin(){
+ // Example DFA and its minimization
+ const dfa={
+  states:[0,1,2,3,4],
+  delta:{'0a':1,'0b':2,'1a':0,'1b':3,'2a':4,'2b':0,'3a':3,'3b':3,'4a':4,'4b':4},
+  accept:[3,4]
+ };
+ const nonAccept=dfa.states.filter(s=>!dfa.accept.includes(s));
+ let P=[dfa.accept,nonAccept];
+ let changed=true;
+ while(changed){
+  changed=false;
+  const newP=[];
+  for(const block of P){
+   const groups={};
+   for(const s of block){
+    const sig=P.map((b,i)=>b.includes(dfa.delta[s+'a'])?i:-1).join(',')+'_'+P.map((b,i)=>b.includes(dfa.delta[s+'b'])?i:-1).join(',');
+    (groups[sig]=groups[sig]||[]).push(s);
+   }
+   if(Object.keys(groups).length>1)changed=true;
+   for(const g of Object.values(groups))newP.push(g);
+  }
+  P=newP;
+ }
+ return {
+  encoded:`Original DFA: states 0-4, accept {3, 4}\nDelta: 0-a->1, 0-b->2, 1-a->0, 1-b->3, 2-a->4, 2-b->0, 3-a->3, 3-b->3, 4-a->4, 4-b->4\n\nMinimized partitions:\n${P.map((b,i)=>`  block ${i+1}: {${b.join(', ')}}`).join('\n')}\n\nOriginal states: 5\nMinimized states: ${P.length}`,
+  decoded:`DFA minimization merges equivalent states. Two states are equivalent if they accept the same strings for every continuation. Partition refinement splits blocks until stable.`
+ };
+}
+function demoTokenize(text){
+ const input=text.trim().split(/\n/)[0]||'x = 3 + 4 * (y - 1)';
+ const tokens=[];
+ const re=/\s*(\d+|[A-Za-z_][A-Za-z0-9_]*|[+\-*/=()])/g;
+ let m;
+ while((m=re.exec(input))!==null){
+  const val=m[1];
+  let kind='OP';
+  if(/^\d+$/.test(val))kind='NUMBER';
+  else if(/^[A-Za-z_]/.test(val))kind='ID';
+  tokens.push({kind,val});
+ }
+ return {
+  encoded:`Input: "${input}"\n\nTokens:\n${tokens.map(t=>`  ${t.kind.padEnd(8)} ${t.val}`).join('\n')}`,
+  decoded:`A tokenizer splits input into meaningful units. Number, identifier and operator rules are combined. The longest match wins. Keywords are filtered from identifiers in a second pass.`
+ };
+}
+function demoNeedlemanWunsch(text){
+ const lines=text.trim().split(/\n/);
+ const a=(lines[0]||'GATTACA').replace(/\s/g,'');
+ const b=(lines[1]||'GCATGCU').replace(/\s/g,'');
+ const match=2,mismatch=-1,gap=-2;
+ const n=a.length,m=b.length;
+ const D=Array.from({length:n+1},()=>new Array(m+1).fill(0));
+ for(let i=0;i<=n;i++)D[i][0]=i*gap;
+ for(let j=0;j<=m;j++)D[0][j]=j*gap;
+ for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){
+  const s=a[i-1]===b[j-1]?match:mismatch;
+  D[i][j]=Math.max(D[i-1][j-1]+s,D[i-1][j]+gap,D[i][j-1]+gap);
+ }
+ // traceback
+ let alignA=[],alignB=[],i=n,j=m;
+ while(i>0&&j>0){
+  const s=a[i-1]===b[j-1]?match:mismatch;
+  if(D[i][j]===D[i-1][j-1]+s){alignA.unshift(a[i-1]);alignB.unshift(b[j-1]);i--;j--}
+  else if(D[i][j]===D[i-1][j]+gap){alignA.unshift(a[i-1]);alignB.unshift('-');i--}
+  else{alignA.unshift('-');alignB.unshift(b[j-1]);j--}
+ }
+ while(i>0){alignA.unshift(a[i-1]);alignB.unshift('-');i--}
+ while(j>0){alignA.unshift('-');alignB.unshift(b[j-1]);j--}
+ return {
+  encoded:`a = "${a}"\nb = "${b}"\nScore: ${D[n][m]}\n\nAlignment:\n  ${alignA.join('')}\n  ${alignB.join('')}\n\nMatch: ${alignA.filter((c,k)=>c===alignB[k]&&c!=='-').length}\nMismatch: ${alignA.filter((c,k)=>c!==alignB[k]&&c!=='-'&&alignB[k]!=='-').length}\nGaps: ${alignA.filter(c=>c==='-').length + alignB.filter(c=>c==='-').length}`,
+  decoded:`Needleman-Wunsch finds the optimal global alignment. The DP table scores matches, mismatches and gaps. Trace back from the bottom right gives the alignment.`
+ };
+}
+function demoSmithWaterman(text){
+ const lines=text.trim().split(/\n/);
+ const a=(lines[0]||'GATTACA').replace(/\s/g,'');
+ const b=(lines[1]||'GCATGCU').replace(/\s/g,'');
+ const match=2,mismatch=-1,gap=-2;
+ const n=a.length,m=b.length;
+ const D=Array.from({length:n+1},()=>new Array(m+1).fill(0));
+ let best=0,bestPos=[0,0];
+ for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){
+  const s=a[i-1]===b[j-1]?match:mismatch;
+  D[i][j]=Math.max(0,D[i-1][j-1]+s,D[i-1][j]+gap,D[i][j-1]+gap);
+  if(D[i][j]>best){best=D[i][j];bestPos=[i,j]}
+ }
+ // traceback from best
+ let alignA=[],alignB=[],i=bestPos[0],j=bestPos[1];
+ while(i>0&&j>0&&D[i][j]>0){
+  const s=a[i-1]===b[j-1]?match:mismatch;
+  if(D[i][j]===D[i-1][j-1]+s){alignA.unshift(a[i-1]);alignB.unshift(b[j-1]);i--;j--}
+  else if(D[i][j]===D[i-1][j]+gap){alignA.unshift(a[i-1]);alignB.unshift('-');i--}
+  else{alignA.unshift('-');alignB.unshift(b[j-1]);j--}
+ }
+ return {
+  encoded:`a = "${a}"\nb = "${b}"\nBest local score: ${best}\nBest end position: (${bestPos[0]}, ${bestPos[1]})\n\nLocal alignment:\n  ${alignA.join('')}\n  ${alignB.join('')}`,
+  decoded:`Smith-Waterman finds the best local alignment. Scores are clamped at 0 so a bad region does not affect the alignment. Trace back from the maximum until reaching 0.`
+ };
+}
+
+/* ============================================================
+   Lab dispatcher
+   ============================================================ */
+function runLab(l,initial){
+ const input=$('#labInput').value;
+ let res;
+ try{
+  if(!initial){$('#labEncoded').textContent='Running…';$('#labDecoded').textContent=''}
+  switch(l.demo){
+   case'naive':res=demoNaive(input);break;
+   case'kmp':res=demoKmp(input);break;
+   case'z-array':res=demoZ(input);break;
+   case'rabin-karp':res=demoRabinKarp(input);break;
+   case'boyer-moore':res=demoBoyerMoore(input);break;
+   case'horspool':res=demoHorspool(input);break;
+   case'shift-or':res=demoShiftOr(input);break;
+   case'aho-corasick':res=demoAhoCorasick(input);break;
+   case'prefix-function':res=demoPrefixFunction(input);break;
+   case'booth':res=demoBooth(input);break;
+   case'periodicity':res=demoPeriodicity(input);break;
+   case'levenshtein':res=demoLevenshtein(input);break;
+   case'damerau':res=demoDamerau(input);break;
+   case'jaro-winkler':res=demoJaroWinkler(input);break;
+   case'suffix-array':res=demoSuffixArray(input);break;
+   case'kasai':res=demoKasai(input);break;
+   case'bwt':res=demoBwt(input);break;
+   case'lz-parsing':res=demoLzParsing(input);break;
+   case'shunting-yard':res=demoShuntingYard(input);break;
+   case'dfa-min':res=demoDfaMin();break;
+   case'tokenize':res=demoTokenize(input);break;
+   case'nw':res=demoNeedlemanWunsch(input);break;
+   case'sw':res=demoSmithWaterman(input);break;
+   case'unicode-normalize':res={encoded:'See the Python example for interactive normalization.',decoded:'Use the Python code to test normalization.'};break;
+   case'unicode-segment':res={encoded:'See the Python example for grapheme segmentation.',decoded:'Use the Python code to test grapheme counting.'};break;
+   default:throw Error('No interactive implementation is available for this lesson.');
+  }
+ }catch(e){
+  res={encoded:'Input or runtime error',decoded:e.message};
+ }
+ const el=$('#labEncoded');
+ if(res.html){el.innerHTML=res.html+'\n\n'+res.encoded}else{el.textContent=res.encoded}
+ $('#labDecoded').textContent=res.decoded;
+ if(!initial)toast('Lab complete');
+}
+
+/* ============================================================
+   State and shell
+   ============================================================ */
+const state={page:'home',current:null,completed:new Set(),bookmarks:new Set(),theme:'system',drafts:{}};
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){const el=$('#toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1900)}
+function save(){try{localStorage.setItem('az-string-lab-v1',JSON.stringify({schemaVersion:1,completed:[...state.completed],bookmarks:[...state.bookmarks],theme:state.theme,current:state.current,drafts:state.drafts}))}catch(e){}}
+function load(){try{const d=JSON.parse(localStorage.getItem('az-string-lab-v1')||'null');if(!d||d.schemaVersion!==1)return;
+ state.completed=new Set((d.completed||[]).filter(id=>byId[id]));
+ state.bookmarks=new Set((d.bookmarks||[]).filter(id=>byId[id]));
+ state.theme=['system','light','dark'].includes(d.theme)?d.theme:'system';
+ state.current=byId[d.current]?d.current:null;
+ state.drafts=d.drafts&&typeof d.drafts==='object'?d.drafts:{};}catch(e){}}
+function applyTheme(){let t=state.theme;if(t==='system')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.theme=t;$('#themeSelect').value=state.theme}
+function getChapter(id){return CHAPTERS.find(c=>c.ids.includes(id))||CHAPTERS[0]}
+function progress(){
+ const n=state.completed.size,t=LESSONS.length;
+ $('#progressText').textContent=`${n} / ${t}`;
+ $('#progressFill').style.width=(n/t*100)+'%';
+ $('#lessonCount').textContent=t+' lessons';
+ $('#catalogCount').textContent=`${CHAPTERS.length} chapters · ${t} lessons · ${LESSONS.filter(l=>l.demo&&l.demo!=='none').length} labs`;
+ $('#progressBar').setAttribute('aria-valuenow',String(Math.round(n/t*100)));
+}
+function renderTree(){
+ const q=$('#searchInput').value.toLowerCase().trim(),ch=$('#chapterFilter').value;
+ const root=$('#courseTree');root.textContent='';
+ for(const c of CHAPTERS){
+  if(ch!=='all'&&c.id!==ch)continue;
+  const rows=c.ids.map(id=>byId[id]).filter(x=>x&&(!q||(x.title+' '+x.summary+' '+x.kind+' '+c.title).toLowerCase().includes(q)));
+  if(!rows.length)continue;
+  const group=document.createElement('section');
+  const label=document.createElement('div');label.className='group-label';
+  label.innerHTML=`<span>${esc(c.title)}</span><span>${rows.length}</span>`;
+  group.append(label);
+  rows.forEach(l=>{
+   const b=document.createElement('button');b.type='button';
+   b.className='link'+(state.current===l.id?' active':'');
+   b.dataset.lesson=l.id;
+   b.innerHTML=`<span class="num">${String(LESSONS.indexOf(l)+1).padStart(2,'0')}</span><span class="name">${esc(l.title)}</span>${state.completed.has(l.id)?'<span class="done" aria-label="completed">✓</span>':''}`;
+   group.append(b);
+  });
+  root.append(group);
+ }
+ if(!root.children.length)root.innerHTML='<p class="muted">No matching lessons. Try another search.</p>';
+ progress();
+}
+function listToHTML(a){return `<ol class="steps">${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>`}
+function refsHTML(r){return r&&r.length?`<div class="references">${r.map(x=>`<a target="_blank" rel="noopener noreferrer" href="${esc(x[1])}">${esc(x[0])} ↗</a>`).join('')}</div>`:'<p class="muted">See the recommended textbooks and papers for a full treatment.</p>'}
+function codeRecord(l){if(l.codeKey==='none')return null;return CODE[l.codeKey]||CODE[l.demo]||null}
+function codeText(l){
+ const c=codeRecord(l);
+ if(c&&c.python)return c.python;
+ return '# CONCEPT OUTLINE, NOT EXECUTABLE PYTHON\n# Lesson: '+l.title+'\n\n# Core idea\n# '+String(l.summary||'').replace(/\n/g,'\n# ')+'\n\n# Pseudocode from the lesson\n'+String(l.pseudo||'').split('\n').map(x=>'# '+x).join('\n')+'\n';
+}
+function statusClass(l){return /Runnable/.test(l.status)?'good':'warn'}
+
+function renderLesson(id){
+ const l=byId[id];if(!l){renderHome();return}
+ state.page='lesson';state.current=id;
+ const c=getChapter(id);const index=LESSONS.indexOf(l);const next=LESSONS[(index+1)%LESSONS.length];
+ const hasDemo=l.demo&&l.demo!=='none';
+ const demoArea=hasDemo?`<section class="panel"><div class="panel-head"><h2>${esc(l.demoTitle||'Interactive teaching lab')}</h2><p>Everything runs in your browser as a teaching implementation. Use a production library for real work.</p></div><div class="body"><div class="lab-top"><label for="labInput">Input</label><button class="btn" id="resetSample">Reset sample</button><button class="btn primary" id="runLab">Run lab</button></div><textarea class="lab-input" id="labInput" aria-label="Lab input">${esc(l.sample||'')}</textarea><div class="notice info"><strong>Format:</strong> most labs expect text on the first line, pattern on the second. Aho-Corasick takes one pattern per line. Jaro-Winkler takes pairs (two lines per pair).</div><div class="lab-cols"><div><div class="label">Output</div><div class="lab-output" id="labEncoded">Run the lab to see output.</div></div><div><div class="label">Explanation</div><div class="lab-output" id="labDecoded">Step notes appear here.</div></div></div></div></section>`:'';
+ const references=refsHTML(l.refs);
+ const code=state.drafts[id]??codeText(l);
+ $('#mainView').innerHTML=`<div class="breadcrumb">String Lab / ${esc(c.title)}</div>
+<header class="header">
+ <div class="eyebrow">LESSON ${String(index+1).padStart(2,'0')} · ${esc(l.kind)}</div>
+ <h1>${esc(l.title)}</h1>
+ <p>${esc(l.summary)}</p>
+ <div class="tags"><span class="tag">Level ${l.level}</span><span class="tag ${statusClass(l)}">${esc(l.status)}</span><span class="tag">${esc(c.title.replace(/^\d+\.\s*/,''))}</span></div>
+ <div class="header-actions">
+  <button class="btn" id="bookmarkBtn">${state.bookmarks.has(id)?'★ Bookmarked':'☆ Bookmark'}</button>
+  <button class="btn primary" id="completeBtn">${state.completed.has(id)?'✓ Completed':'Mark complete'}</button>
+ </div>
+</header>
+<section class="panel"><div class="panel-head"><h2>1. Understand the idea</h2><p>Plain language and a mental picture</p></div><div class="body idea"><div><p>${esc(l.summary)}</p><p><strong>What problem it solves:</strong> ${esc(l.problem)}</p><div class="takeaway"><strong>Takeaway:</strong> ${esc(l.output)}</div></div><aside class="mental"><small>Mental picture</small><strong>${esc(l.mental)}</strong><p>${esc(l.mentalText)}</p></aside></div></section>
+<section class="panel"><div class="panel-head"><h2>2. Input and output</h2><p>Know what goes in and what comes out</p></div><div class="body two"><div class="mini"><h3>Input</h3><p>${esc(l.input)}</p></div><div class="mini"><h3>Output</h3><p>${esc(l.output)}</p></div></div></section>
+<section class="panel"><div class="panel-head"><h2>3. How it works</h2><p>Step by step, with the key rule that makes it correct</p></div><div class="body two"><div>${listToHTML(l.steps)}<div class="takeaway" style="margin-top:14px"><strong>Key rule:</strong> ${esc(l.invariant)}</div></div><pre class="pseudo">${esc(l.pseudo)}</pre></div><div class="table-wrap" style="margin-top:16px"><table><thead><tr><th>Step</th><th>What happens</th><th>Why it matters</th></tr></thead><tbody>${l.trace.map(r=>`<tr>${r.map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>
+${demoArea}
+<section class="panel"><div class="panel-head"><h2>4. Cost and stability</h2><p>Costs depend on text length, pattern length and alphabet size. These are scope labels, not universal benchmarks.</p></div><div class="body"><div class="tiles">${l.complexity.map((x,i)=>`<div class="tile"><span>${['Time','Space','Interpretation'][i]}</span><strong>${esc(x.split(' ').slice(0,2).join(' '))}</strong><small>${esc(x)}</small></div>`).join('')}</div><div class="two" style="margin-top:12px"><div class="mini"><h3>Strengths</h3><p>${esc(l.strength)}</p></div><div class="mini"><h3>Limits</h3><p>${esc(l.limits)}</p></div></div></div></section>
+<section class="panel"><div class="panel-head"><h2>5. Code and usage</h2><p>Reference code is for learning. Real code should use a vetted string library.</p></div><div class="code-head"><div><span class="tag">${codeRecord(l)?'Python example':'Concept outline, not executable'}</span> <span class="tag">Editable</span></div><div class="header-actions" style="margin:0"><button class="btn" id="copyCode">Copy code</button><button class="btn" id="downloadCode">Download</button></div></div><textarea id="codeEditor" class="code-editor" spellcheck="false" aria-label="Editable Python code">${esc(code)}</textarea><div class="code-foot"><span>${codeRecord(l)?'Reference example. The in-page lab runs its own JavaScript implementation.':'Lesson-specific outline, not an implementation.'}</span><span id="codeStatus">Local draft</span></div><div class="body"><div class="mini"><h3>Where it is used</h3><p>${esc(l.uses)}</p></div><div class="notice" style="margin-top:12px"><strong>Common pitfall:</strong> ${esc(l.pitfall)}</div></div></section>
+<section class="panel"><div class="panel-head"><h2>6. Choices and alternatives</h2><p>Pick based on the text, constraints and the guarantee you need</p></div><div class="body two"><div class="mini"><h3>When to use this</h3><p>${esc(l.strength)}</p></div><div class="mini"><h3>When to use something else</h3><p>${esc(l.limits)}</p></div></div></section>
+<section class="panel"><div class="panel-head"><h2>7. Check yourself</h2><p>Try to answer before you open the explanation</p></div><div class="body"><details class="practice"><summary>${esc(l.question)}</summary><p>${esc(l.answer)}</p></details></div></section>
+<section class="panel"><div class="panel-head"><h2>8. References</h2><p>Standard references for this topic</p></div><div class="body">${references}<p class="muted" style="font-size:11.5px;margin-top:14px">The labs on this page are teaching implementations. For production work use RE2, Hyperscan, Python's re, Rust's regex crate, or another vetted library.</p></div></section>
+<footer class="footer"><span>Az String Lab · local learning</span><span>Lesson ${index+1} of ${LESSONS.length} · Next: ${esc(next.title)}</span><button class="btn" id="nextLesson">Next →</button></footer>`;
+
+ $('#bookmarkBtn').onclick=()=>{state.bookmarks.has(id)?state.bookmarks.delete(id):state.bookmarks.add(id);save();renderLesson(id);toast(state.bookmarks.has(id)?'Bookmarked':'Bookmark removed')};
+ $('#completeBtn').onclick=()=>{state.completed.has(id)?state.completed.delete(id):state.completed.add(id);save();renderTree();renderLesson(id);toast(state.completed.has(id)?'Lesson completed':'Completion removed')};
+ $('#nextLesson').onclick=()=>openLesson(next.id);
+ $('#copyCode').onclick=async()=>{const v=$('#codeEditor').value;try{await navigator.clipboard.writeText(v);toast('Code copied')}catch{const ta=$('#codeEditor');ta.select();document.execCommand('copy');toast('Code copied')}};
+ $('#downloadCode').onclick=()=>{const r=codeRecord(l);downloadText(`${id}.${r?'py':'txt'}`,$('#codeEditor').value,r?'text/x-python':'text/plain')};
+ $('#codeEditor').addEventListener('input',()=>{state.drafts[id]=$('#codeEditor').value;save();$('#codeStatus').textContent='Draft saved locally'});
+ if(hasDemo){
+  $('#runLab').onclick=()=>runLab(l);
+  $('#resetSample').onclick=()=>{$('#labInput').value=l.sample||'';$('#labEncoded').textContent='Run the lab to see output.';$('#labDecoded').textContent='Step notes appear here.'};
+  runLab(l,true);
+ }
+ renderTree();save();
+ if(location.hash!==`#${id}`)history.replaceState(null,'',`#${id}`);
+}
+
+function renderHome(){
+ state.page='home';
+ $('#mainView').innerHTML=`<div class="home-hero"><div class="eyebrow">AZ · ENGINEERING TOOLBOOK</div><h1>Understand string algorithms from naive search to genome assembly.</h1><p>A beginner friendly course covering text basics, exact matching, bit-parallel and multi-pattern matching, prefixes and rotations, edit distance, suffix structures, compression, parsing, automata, and bioinformatics. Every lesson has a plain explanation and most have a runnable lab.</p><div class="header-actions" style="margin:0"><button class="btn primary" id="startFirst">Start at the beginning</button><button class="btn" id="resumeLesson">Continue lesson</button></div></div>
+<div class="stats"><div class="stat"><strong>${CHAPTERS.length}</strong><span>chapters</span></div><div class="stat"><strong>${LESSONS.length}</strong><span>lessons</span></div><div class="stat"><strong>${LESSONS.filter(l=>l.demo&&l.demo!=='none').length}</strong><span>runnable labs</span></div><div class="stat"><strong>1</strong><span>standalone HTML file</span></div></div>
+<section class="panel"><div class="panel-head"><h2>Honest scope</h2><p>One app covers the whole curriculum. Production string libraries are a separate engineering project.</p></div><div class="body two"><div class="mini"><h3>What runs here</h3><p>Naive search, KMP, Z-array, Rabin-Karp, Boyer-Moore (bad-character), Horspool, Shift-Or, Aho-Corasick, prefix function, Booth least rotation, periodicity check, Levenshtein, Damerau-Levenshtein, Jaro-Winkler, suffix array (naive), Kasai LCP, BWT (naive), LZ77, shunting-yard, DFA minimization by partition refinement, tokenization, Needleman-Wunsch and Smith-Waterman alignment.</p></div><div class="mini"><h3>What does not run here</h3><p>Production implementations of Myers bit-vector, Wu-Manber, SA-IS, DC3, Ukkonen suffix trees, FM-index, wavelet trees, Thompson NFA, Glushkov, Brzozowski derivatives, LL/LR/LALR parsers, packrat parsers, Hopcroft DFA minimization, Unicode grapheme segmentation, BLAST, minimap2, BWA, MAFFT and de Bruijn assemblers. For real work use std::string, Python str, RE2, Rust regex, Hyperscan, Biopython or another vetted library.</p></div></div></section>
+<div class="panel"><div class="panel-head"><h2>Course map</h2><p>Pick a chapter. The path runs from foundations to bioinformatics.</p></div><div class="body"><div class="chapter-cards">${CHAPTERS.map((c,i)=>`<button class="chapter-card" data-chapter="${c.id}"><span class="num">CHAPTER ${String(i+1).padStart(2,'0')} · ${c.ids.length} LESSONS</span><strong>${esc(c.title.replace(/^\d+\.\s*/,''))}</strong><p>${esc(c.desc)}</p></button>`).join('')}</div></div></div>
+<footer class="footer"><span>Az String Lab</span><span>Single file · no external runtime dependencies</span></footer>`;
+ $('#startFirst').onclick=()=>openLesson('char-sets');
+ $('#resumeLesson').onclick=()=>openLesson(state.current&&byId[state.current]?state.current:'char-sets');
+ $('#mainView').querySelectorAll('[data-chapter]').forEach(b=>b.onclick=()=>{const c=CHAPTERS.find(x=>x.id===b.dataset.chapter);if(c)openLesson(c.ids[0])});
+}
+
+function renderProgressPage(){
+ state.page='progress';
+ $('#mainView').innerHTML=`<div class="breadcrumb">String Lab / Bookmarks & progress</div><header class="header"><div class="eyebrow">LOCAL ONLY</div><h1>Bookmarks and progress</h1><p>Your progress stays in this browser. Export the JSON to move it or keep a backup.</p></header>
+<section class="panel"><div class="panel-head"><h2>Completed lessons</h2></div><div class="body">${state.completed.size?`<div class="references">${[...state.completed].map(id=>`<a href="#${id}" data-open="${id}">${esc(byId[id].title)}</a>`).join('')}</div>`:'<p class="muted">No lessons marked complete yet.</p>'}</div></section>
+<section class="panel"><div class="panel-head"><h2>Bookmarks</h2></div><div class="body">${state.bookmarks.size?`<div class="references">${[...state.bookmarks].map(id=>`<a href="#${id}" data-open="${id}">${esc(byId[id].title)}</a>`).join('')}</div>`:'<p class="muted">No bookmarks yet.</p>'}</div></section>
+<section class="panel"><div class="panel-head"><h2>Progress data</h2></div><div class="body"><div class="header-actions" style="margin:0"><button class="btn primary" id="exportProgress">Export progress JSON</button><button class="btn" id="clearProgress">Clear completion marks</button></div><p class="muted" style="font-size:12.5px;margin-top:14px">Import accepts only known lesson IDs and a supported schema version.</p></div></section>`;
+ $('#mainView').querySelectorAll('[data-open]').forEach(a=>a.onclick=e=>{e.preventDefault();openLesson(a.dataset.open)});
+ $('#exportProgress').onclick=exportProgress;
+ $('#clearProgress').onclick=()=>{if(confirm('Clear all completion marks?')){state.completed.clear();save();renderProgressPage();renderTree();toast('Completion marks cleared')}};
+}
+
+function openLesson(id){if(!byId[id])return;renderLesson(id);renderTree();$('#mainView').focus({preventScroll:true});window.scrollTo(0,0)}
+function downloadText(name,text,type='text/plain'){const blob=new Blob([text],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),800)}
+function exportProgress(){downloadText('az-string-lab-progress.json',JSON.stringify({schemaVersion:1,completed:[...state.completed],bookmarks:[...state.bookmarks],theme:state.theme,current:state.current,drafts:state.drafts},null,2),'application/json');toast('Progress exported')}
+function importProgressFile(file){
+ if(file.size>2_000_000){toast('Import rejected: file too large');return}
+ const r=new FileReader();
+ r.onload=()=>{try{
+  const d=JSON.parse(r.result);
+  if(!d||d.schemaVersion!==1||!Array.isArray(d.completed)||!Array.isArray(d.bookmarks)||typeof d.drafts!=='object')throw Error('bad schema');
+  if([...d.completed,...d.bookmarks].some(id=>typeof id!=='string'||!byId[id]))throw Error('unknown id');
+  state.completed=new Set(d.completed);
+  state.bookmarks=new Set(d.bookmarks);
+  state.theme=['system','light','dark'].includes(d.theme)?d.theme:'system';
+  state.current=byId[d.current]?d.current:null;
+  state.drafts=Object.fromEntries(Object.entries(d.drafts).filter(([k,v])=>byId[k]&&typeof v==='string'&&v.length<100000));
+  applyTheme();save();renderTree();
+  state.current?openLesson(state.current):renderHome();
+  toast('Progress imported');
+ }catch(e){toast('Import rejected: invalid progress data')}};
+ r.readAsText(file);
+}
+
+function bindGlobal(){
+ $('#themeSelect').onchange=()=>{state.theme=$('#themeSelect').value;applyTheme();save()};
+ $('#printBtn').onclick=()=>print();
+ $('#exportBtn').onclick=exportProgress;
+ $('#importBtn').onclick=()=>$('#importFile').click();
+ $('#importFile').onchange=e=>{if(e.target.files[0])importProgressFile(e.target.files[0]);e.target.value=''};
+ $('#searchInput').oninput=renderTree;
+ $('#chapterFilter').onchange=renderTree;
+ $('#homeLink').onclick=e=>{e.preventDefault();renderHome();history.replaceState(null,'','#home')};
+ $('#courseTree').onclick=e=>{const b=e.target.closest('[data-lesson]');if(b)openLesson(b.dataset.lesson)};
+ document.querySelectorAll('[data-page="home"]').forEach(b=>b.onclick=renderHome);
+ document.querySelectorAll('[data-page="progress"]').forEach(b=>b.onclick=renderProgressPage);
+ document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();$('#searchInput').focus()}
+  if(e.key.toLowerCase()==='t'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){
+   state.theme=state.theme==='dark'?'light':state.theme==='light'?'system':'dark';
+   applyTheme();save();
+  }
+ });
+}
+
+function init(){
+ load();
+ applyTheme();
+ CHAPTERS.forEach(c=>{const op=document.createElement('option');op.value=c.id;op.textContent=c.title;$('#chapterFilter').append(op)});
+ bindGlobal();
+ renderTree();
+ const hash=location.hash.replace(/^#/,'');
+ if(hash&&byId[hash])renderLesson(hash);
+ else if(state.current&&byId[state.current])renderLesson(state.current);
+ else renderHome();
+ progress();
+}
+init();
+</script></body></html>
